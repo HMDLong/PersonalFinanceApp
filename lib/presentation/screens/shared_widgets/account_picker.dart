@@ -1,0 +1,63 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_boxicons/flutter_boxicons.dart';
+import 'package:saving_app/data/models/accounts.model.dart';
+import 'package:saving_app/presentation/screens/shared_widgets/account_bottom_sheet.dart';
+import 'package:saving_app/presentation/screens/style/styles.dart';
+
+class AccountPicker extends StatefulWidget {
+  final String? label;
+  final void Function(Account value) onAccountChanged;
+  const AccountPicker({super.key, this.label, required this.onAccountChanged});
+
+  @override
+  State<AccountPicker> createState() => _AccountPickerState();
+}
+
+class _AccountPickerState extends State<AccountPicker> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        inputLabelWithPadding(widget.label ?? "Tài khoản"),
+        TextFormField(
+          controller: _controller,
+          readOnly: true,
+          decoration: addRecordFormFieldStyle(icon: const Icon(Boxicons.bx_wallet)),
+          onTap: () => _selectAccount(_controller, "sourceAcc"),
+        ),
+      ],
+    );
+  }
+
+  void _selectAccount(TextEditingController controller, String fieldKey) async {
+    Account? account = await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: true,
+      useSafeArea: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(10.0), 
+        topRight: Radius.circular(10.0),
+      )),
+      builder: (context) {
+        return const AccountBottomSheet();
+      }
+    );
+
+    if(account != null) {
+      setState(() {
+        widget.onAccountChanged(account);
+        controller.text = account.title!;
+      });
+    }
+  }
+}

@@ -1,6 +1,10 @@
+import 'package:intl/intl.dart';
+
 class TimeRange {
   late DateTime start;
   late DateTime end;
+
+  int get duration => end.difference(start).inDays;
 
   TimeRange({
     required DateTime start,
@@ -12,7 +16,8 @@ class TimeRange {
 
   @override
   String toString() {
-    return "$start -> $end";
+    final formatter = DateFormat(DateFormat.YEAR_ABBR_MONTH_DAY);
+    return "${formatter.format(start)} ~ ${formatter.format(end)}";
   }
 
   /// Check if a [date] is between this range
@@ -22,12 +27,49 @@ class TimeRange {
     if(dateOnly.isAfter(end)) return false;
     return true;
   }
+
+  /// Return a list contains all the dates that in this range
+  List<DateTime> getRangeDates(){
+    final rangeDuration = duration;
+    return List<DateTime>.generate(rangeDuration + 1, (index) => start.add(Duration(days: index)));
+  }
 }
 
 extension TimeRangeExt on DateTime {
   DateTime toDateOnly() {
     return DateTime(year, month, day);
   }
+
+  DateTime to9PM(){
+    return DateTime(year, month, day, 21, 0, 0);
+  }
+
+    DateTime to9AM(){
+    return DateTime(year, month, day, 9, 0, 0);
+  }
+}
+
+// ------------------ Custom range ----------------------
+TimeRange getNDaysBefore(DateTime date, int n) {
+  final dateOnly = date.toDateOnly();
+  return TimeRange(
+    start: dateOnly.subtract(Duration(days: n)), 
+    end: dateOnly,
+  );
+}
+
+List<DateTime> getDayOfEveryWeekInMonth(DateTime anchor, int dayInWeek) {
+  final monthRange = getRangeOfTheMonth(date: anchor);
+  final res = <DateTime>[];
+  var lastDayInWeek = monthRange.end;
+  while(lastDayInWeek.weekday != dayInWeek) {
+    lastDayInWeek = lastDayInWeek.subtract(const Duration(days: 1));
+  }
+  do {
+    res.add(lastDayInWeek);
+    lastDayInWeek = lastDayInWeek.subtract(const Duration(days: 7));
+  } while (monthRange.contain(lastDayInWeek));
+  return res;
 }
 
 //------------------- Day as range -----------------------
@@ -167,9 +209,5 @@ TimeRange getPreviousYearRange({required TimeRange range}) {
 }
 
 void main() {
-  var currentRange = getRangeOfTheWeek();
-  for(int i = 1; i < 20; i++) {
-    currentRange = getPreviousWeekRangeByRange(range: currentRange);
-    print(currentRange);
-  }
+  print(getDayOfEveryWeekInMonth(DateTime.now(), 2));
 }
