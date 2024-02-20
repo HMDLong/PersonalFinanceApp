@@ -96,11 +96,17 @@ class _CreditListTile extends StatelessWidget{
         title: Text(
           "${credit.title}"
         ),
-        subtitle: Text(
-          "${NumberFormat.decimalPattern().format(credit.amount)} VND/${credit.payment}",
-          style: const TextStyle(
-    
-          ),
+        subtitle: Row(
+          children: [
+            Text(
+              NumberFormat.decimalPattern().format(credit.limit!.abs() - credit.amount!.abs()),
+              style: TextStyle(
+                color: Colors.indigoAccent.shade700,
+                fontWeight: FontWeight.bold
+              ),
+            ),
+            const Text("VND", style: TextStyle(color: Colors.black54)),
+          ],
         ),
         trailing: const Icon(Icons.chevron_right_sharp),
       ),

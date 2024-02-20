@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saving_app/data/models/plan/income_dist.dart';
-import 'package:saving_app/viewmodels/plan_setting_viewmodel.dart';
+import 'package:saving_app/viewmodels/plan/plan_setting_viewmodel.dart';
 import 'package:saving_app/viewmodels/transact/plan_transact_viewmodel.dart';
 
 final distMapProvider = Provider((ref) {

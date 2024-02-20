@@ -1,23 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:saving_app/data/local/model_repos/plan_transact/plan_transact_repo.dart';
 import 'package:saving_app/data/models/plan_transaction.model.dart';
+import 'package:saving_app/data/models/transaction.model.dart';
 import 'package:saving_app/presentation/managers/plan_manager.dart';
+import 'package:saving_app/utils/times.dart';
+import 'package:saving_app/viewmodels/transact/plan_transact_viewmodel.dart';
+import 'package:saving_app/viewmodels/transact/transact_viewmodel.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class PlanTimelineTab extends StatefulWidget {
+class PlanTimelineTab extends ConsumerStatefulWidget {
   const PlanTimelineTab({super.key});
 
   @override
-  State<PlanTimelineTab> createState() => _PlanTimelineTabState();
+  ConsumerState<PlanTimelineTab> createState() => _PlanTimelineTabState();
 }
 
-class _PlanTimelineTabState extends State<PlanTimelineTab> {
+class _PlanTimelineTabState extends ConsumerState<PlanTimelineTab> {
+
+  Color _getColor(Transaction transact) {
+    if(transact.paid) {
+      return Colors.green;
+    }
+    final today = DateTime.now().toDateOnly();
+    if(today.isAfter(transact.timestamp)) {
+      return Colors.red;
+    }
+    return Colors.amber;
+  }
+
+  bool isLate(Transaction transact) {
+    final today = DateTime.now().toDateOnly();
+    return today.isAfter(transact.timestamp) && transact.paid == false;
+  }
   
   @override
   Widget build(BuildContext context) {
-    var planTransacts = context.watch<PlanTransactJsonRepository>().getAll();
+    // var planTransacts = context.watch<PlanTransactJsonRepository>().getAll();
+    var planTransacts = ref.watch(scheduledPlanTransactProvider(getRangeOfTheMonth())).toList();
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -31,7 +53,8 @@ class _PlanTimelineTabState extends State<PlanTimelineTab> {
           ),
           dataSource: PlanTransactionCalendarData(planTransacts),
           appointmentBuilder: (context, calendarAppointmentDetails) {
-            final appointment = calendarAppointmentDetails.appointments.first as PlanTransaction;
+            final appointment = calendarAppointmentDetails.appointments.first as Transaction;
+            
             return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -40,11 +63,12 @@ class _PlanTimelineTabState extends State<PlanTimelineTab> {
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: switch(appointment.status) {
-                      PaidStatus.late => Colors.red,
-                      PaidStatus.upcoming => Colors.amber,
-                      PaidStatus.paid => Colors.green,
-                    },
+                    color: _getColor(appointment),
+                    // switch(appointment.status) {
+                    //   PaidStatus.late => Colors.red,
+                    //   PaidStatus.upcoming => Colors.amber,
+                    //   PaidStatus.paid => Colors.green,
+                    // },
                     width: 1,
                   ),
                   borderRadius: BorderRadius.circular(10.0),
@@ -58,7 +82,7 @@ class _PlanTimelineTabState extends State<PlanTimelineTab> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            appointment.title,
+                            appointment.planTransactTitle!,
                             style: const TextStyle(
                               fontSize: 12
                             ),
@@ -72,12 +96,19 @@ class _PlanTimelineTabState extends State<PlanTimelineTab> {
                         ],
                       )
                     ),
-                    Expanded(
+                    appointment.paid
+                    ? const SizedBox(width: 0.1,)
+                    : Expanded(
                       flex: 2,
                       child: Switch(
-                        value: appointment.notificationId > 0, 
+                        value: ref.watch(planTransactNoti(appointment.planTransactId!)).when(
+                          data: (data) => data, 
+                          error: (error, _) => throw error, 
+                          loading: () => false,
+                        ), 
                         onChanged: (switchOn) {
-                          context.read<PlanController>().setNotification(appointment.id, switchOn);
+                          // context.read<PlanController>().setNotification(appointment.id, switchOn);
+                          ref.read(planTransactionProvider.notifier).setPlanTransactNoti(appointment.planTransactId!, switchOn);
                         }
                       )
                     )
@@ -92,24 +123,24 @@ class _PlanTimelineTabState extends State<PlanTimelineTab> {
   }
 }
 
-class PlanTransactionCalendarData extends CalendarDataSource<PlanTransaction> {
-  PlanTransactionCalendarData(List<PlanTransaction> transacts) {
+class PlanTransactionCalendarData extends CalendarDataSource<Transaction> {
+  PlanTransactionCalendarData(List<Transaction> transacts) {
     appointments = transacts;
   }
 
   @override
   DateTime getStartTime(int index) {
-    return appointments![index].transactDate;
+    return appointments![index].timestamp;
   }
 
   @override
   DateTime getEndTime(int index) {
-    return appointments![index].transactDate;
+    return appointments![index].timestamp;
   }
 
   @override
   String getSubject(int index) {
-    return "${appointments![index].title}";
+    return "${appointments![index].planTransactTitle}";
   }
 
   @override
@@ -119,11 +150,20 @@ class PlanTransactionCalendarData extends CalendarDataSource<PlanTransaction> {
 
   @override
   Color getColor(int index) {
-    return switch((appointments![index] as PlanTransaction).status) {
-      PaidStatus.late => Colors.red,
-      PaidStatus.upcoming => Colors.amber,
-      PaidStatus.paid => Colors.green,
-    };
+    final transact = appointments![index] as Transaction;
+    if(transact.paid) {
+      return Colors.green;
+    }
+    final today = DateTime.now().toDateOnly();
+    if(today.isAfter(transact.timestamp)) {
+      return Colors.red;
+    }
+    return Colors.amber;
+    // return switch((appointments![index] as Transaction).status) {
+    //   PaidStatus.late => Colors.red,
+    //   PaidStatus.upcoming => Colors.amber,
+    //   PaidStatus.paid => Colors.green,
+    // };
   }
 
   @override

@@ -9,6 +9,7 @@ import 'package:saving_app/presentation/managers/transaction_manager.dart';
 import 'package:saving_app/presentation/screens/plan/overall/budget/new_budget.screen.dart';
 import 'package:saving_app/presentation/screens/shared_widgets/budget_card.dart';
 import 'package:saving_app/presentation/screens/style/styles.dart';
+import 'package:saving_app/utils/format.dart';
 import 'package:saving_app/utils/times.dart';
 
 class BudgetTab extends StatefulWidget {
@@ -47,7 +48,7 @@ class _BudgetTabState extends State<BudgetTab> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        "Budget ${DateFormat(DateFormat.YEAR_ABBR_MONTH).format(DateTime.now())}"
+                        "Ngân quỹ ${toVnMonthYear(DateTime.now())}"
                       ),
                       const SizedBox(height: 5,),
                       Row(

@@ -51,7 +51,7 @@ class _InstallmentFormState extends State<InstallmentForm> {
                   TextFormField(
                     initialValue: "0.0",
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.percent)),
+                    decoration: formFieldDecor(icon: const Icon(CupertinoIcons.percent)),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if(value == null || value.isEmpty) {
@@ -87,7 +87,7 @@ class _InstallmentFormState extends State<InstallmentForm> {
                     controller: _duedateController,
                     readOnly: true,
                     onTap: () => _selectDate(),
-                    decoration: addRecordFormFieldStyle(icon: const Icon(Icons.calendar_month)),
+                    decoration: formFieldDecor(icon: const Icon(Icons.calendar_month)),
                     validator: (value) {
                       if(value == null || value.isEmpty) {
                         return "Hãy chọn 1 ngày";
@@ -109,11 +109,11 @@ class _InstallmentFormState extends State<InstallmentForm> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  inputLabelWithPadding("Mỗi kỳ trả góp"),
+                  inputLabelWithPadding("Tối thiểu mỗi kỳ"),
                   TextFormField(
                     initialValue: "0",
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: addRecordFormFieldStyle(suffix: Text("months", style: inputTextSuffixStyle(),)),
+                    decoration: formFieldDecor(suffix: Text("VND", style: inputTextSuffixStyle(),)),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if(value == null || value.isEmpty) {
@@ -150,7 +150,7 @@ class _InstallmentFormState extends State<InstallmentForm> {
                   TextFormField(
                     initialValue: "0",
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: addRecordFormFieldStyle(suffix: Text("months", style: inputTextSuffixStyle(),)),
+                    decoration: formFieldDecor(suffix: Text("months", style: inputTextSuffixStyle(),)),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if(value == null || value.isEmpty) {

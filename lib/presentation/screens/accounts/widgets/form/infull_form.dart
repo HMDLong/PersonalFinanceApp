@@ -47,7 +47,7 @@ class _InfullFormState extends State<InfullForm> {
                 controller: _duedateController,
                 readOnly: true,
                 onTap: () => _selectDate(),
-                decoration: addRecordFormFieldStyle(icon: const Icon(Icons.calendar_month)),
+                decoration: formFieldDecor(icon: const Icon(Icons.calendar_month)),
                 validator: (value) {
                   if(value == null || _duedate == null) {
                     return "Hãy chọn 1 ngày";
@@ -69,7 +69,7 @@ class _InfullFormState extends State<InfullForm> {
               inputLabelWithPadding("Lãi suất"),
               TextFormField(
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.money_dollar)),
+                decoration: formFieldDecor(icon: const Icon(CupertinoIcons.money_dollar)),
                 keyboardType: TextInputType.number,
                 validator: (value) {
                   if(value == null || value.isEmpty) {

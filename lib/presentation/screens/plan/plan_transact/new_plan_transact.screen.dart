@@ -71,7 +71,7 @@ class _NewPlanTransactScreenState extends ConsumerState<NewPlanTransactScreen> {
                   TextFormField(
                     keyboardType: TextInputType.text,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: addRecordFormFieldStyle(icon: const Icon(Icons.textsms_outlined)),
+                    decoration: formFieldDecor(icon: const Icon(Icons.textsms_outlined)),
                     validator: (value) {
                       if(value == null || value.isEmpty) {
                         return "Hãy nhập tiêu đề";
@@ -83,7 +83,7 @@ class _NewPlanTransactScreenState extends ConsumerState<NewPlanTransactScreen> {
                   inputLabelWithPadding("Số tiền"),
                   TextFormField(
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.money_dollar)),
+                    decoration: formFieldDecor(icon: const Icon(CupertinoIcons.money_dollar)),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if(value == null || value.isEmpty) {
@@ -225,7 +225,7 @@ class _NewPlanTransactScreenState extends ConsumerState<NewPlanTransactScreen> {
         categoryId: (_formData["category"] as TransactCategory).id!,
         transactType: transactionType,
         transactDate: _formData["date"],
-        period: period == 0 ? (_formData["period"] ?? Periodic.monthly) : null,
+        period: period == 0 ? (_formData["period"] ?? Periodic.monthly) : Periodic.onetime,
         notificationId: _formData["isNotified"] ? Random.secure().nextInt(100000) : -1, 
         targetAccount: '',
       );

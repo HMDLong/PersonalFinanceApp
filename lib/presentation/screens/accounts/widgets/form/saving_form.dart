@@ -54,7 +54,7 @@ class _NewSavingFormState extends ConsumerState<NewSavingForm> {
           children: [
             inputLabelWithPadding("Tiêu đề"),
             TextFormField(
-              decoration: addRecordFormFieldStyle(icon: const Icon(Icons.title)),
+              decoration: formFieldDecor(icon: const Icon(Icons.title)),
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) {
                 if(value == null || value.isEmpty) {
@@ -73,7 +73,7 @@ class _NewSavingFormState extends ConsumerState<NewSavingForm> {
             inputLabelWithPadding("Số tiền đã tiết kiệm"),
             TextFormField(
               initialValue: "0",
-              decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.money_dollar)),
+              decoration: formFieldDecor(icon: const Icon(CupertinoIcons.money_dollar)),
               keyboardType: TextInputType.number,
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) {
@@ -103,7 +103,7 @@ class _NewSavingFormState extends ConsumerState<NewSavingForm> {
                       TextFormField(
                         initialValue: "0.0",
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.money_dollar)),
+                        decoration: formFieldDecor(icon: const Icon(CupertinoIcons.money_dollar)),
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if(value == null || value.isEmpty) {
@@ -144,7 +144,7 @@ class _NewSavingFormState extends ConsumerState<NewSavingForm> {
                       TextFormField(
                         initialValue: "0",
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.money_dollar)),
+                        decoration: formFieldDecor(icon: const Icon(CupertinoIcons.money_dollar)),
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if(value == null || value.isEmpty) {
@@ -203,7 +203,7 @@ class _NewSavingFormState extends ConsumerState<NewSavingForm> {
             TextFormField(
               enabled: _hasGoal,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: addRecordFormFieldStyle(icon: const Icon(Icons.label_outline)),
+              decoration: formFieldDecor(icon: const Icon(Icons.label_outline)),
               validator: (value) {
                 if(!_hasGoal) {
                   return null;
@@ -227,7 +227,7 @@ class _NewSavingFormState extends ConsumerState<NewSavingForm> {
                       TextFormField(
                         enabled: _hasGoal,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.money_dollar)),
+                        decoration: formFieldDecor(icon: const Icon(CupertinoIcons.money_dollar)),
                         keyboardType: TextInputType.number,
                         validator: (value) {
                           if(!_hasGoal) {
@@ -266,7 +266,7 @@ class _NewSavingFormState extends ConsumerState<NewSavingForm> {
                         controller: _deadlineController,
                         readOnly: true,
                         onTap: () => _selectDate(),
-                        decoration: addRecordFormFieldStyle(icon: const Icon(Icons.calendar_month)),
+                        decoration: formFieldDecor(icon: const Icon(Icons.calendar_month)),
                         validator: (value) {
                           if(!_hasGoal) {
                             return null;

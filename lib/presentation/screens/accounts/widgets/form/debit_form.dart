@@ -56,7 +56,7 @@ class _NewDebitFormState extends State<NewDebitForm> {
             inputLabelWithPadding("Tiêu đề"),
             TextFormField(
               initialValue: widget.prefill != null ? widget.prefill!.title : null,
-              decoration: addRecordFormFieldStyle(icon: const Icon(Icons.title)),
+              decoration: formFieldDecor(icon: const Icon(Icons.title)),
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) {
                 if(value == null || value.isEmpty) {
@@ -78,7 +78,7 @@ class _NewDebitFormState extends State<NewDebitForm> {
                             ? "${NumberFormat.decimalPattern().format(widget.prefill!.amount)}"
                             : null,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: addRecordFormFieldStyle(
+              decoration: formFieldDecor(
                 icon: const Icon(CupertinoIcons.money_dollar),
                 suffix: const Text('VND'),
               ),

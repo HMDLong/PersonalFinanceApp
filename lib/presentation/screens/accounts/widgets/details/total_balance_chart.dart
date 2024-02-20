@@ -11,7 +11,9 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 class AccountBalanceChart extends StatefulWidget {
   final ValueListenable<Box<Transaction>> boxListenable;
   final Account account;
-  const AccountBalanceChart({super.key, required this.boxListenable, required this.account});
+  final double? height;
+  final double? width;
+  const AccountBalanceChart({super.key, required this.boxListenable, required this.account, this.height, this.width});
 
   @override
   State<AccountBalanceChart> createState() => _AccountBalanceChartState();
@@ -74,29 +76,34 @@ class _AccountBalanceChartState extends State<AccountBalanceChart> {
           valueListenable: widget.boxListenable,
           builder: (BuildContext context, Box<Transaction> value, Widget? child) { 
             final seriesToDisplay = toChartSeries(filterTransaction(value.values.toList()));
-            return SfCartesianChart(
-              primaryXAxis: CategoryAxis(
-                plotOffset: 10.0,
-                labelPlacement: LabelPlacement.onTicks,
-                labelAlignment: LabelAlignment.center
-              ),
-              primaryYAxis: NumericAxis(
-                numberFormat: NumberFormat.compact(),
-              ),
-              tooltipBehavior: TooltipBehavior(enable: true),
-              zoomPanBehavior: ZoomPanBehavior(
-                enablePinching: true,
-                enablePanning: true,
-                zoomMode: ZoomMode.x,
-              ),
-              series: <LineSeries<ChartData<DateTime, int>, String>>[
-                LineSeries<ChartData<DateTime, int>, String>(
-                  dataSource: seriesToDisplay,
-                  xValueMapper: (ChartData<DateTime, int> data, _) => DateFormat.MMMd().format(data.x),
-                  yValueMapper: (ChartData<DateTime, int> data, _) => data.y,
-                  markerSettings: const MarkerSettings(isVisible: true),
+            return SizedBox(
+              height: widget.height,
+              width: widget.width,
+              child: SfCartesianChart(
+                primaryXAxis: CategoryAxis(
+                  plotOffset: 10.0,
+                  labelPlacement: LabelPlacement.onTicks,
+                  labelAlignment: LabelAlignment.center
                 ),
-              ],
+                primaryYAxis: NumericAxis(
+                  numberFormat: NumberFormat.compact(),
+                ),
+                tooltipBehavior: TooltipBehavior(enable: true),
+                zoomPanBehavior: ZoomPanBehavior(
+                  enablePinching: true,
+                  enablePanning: true,
+                  zoomMode: ZoomMode.x,
+                ),
+                
+                series: <SplineSeries<ChartData<DateTime, int>, String>>[
+                  SplineSeries<ChartData<DateTime, int>, String>(
+                    dataSource: seriesToDisplay,
+                    xValueMapper: (ChartData<DateTime, int> data, _) => DateFormat.MMMd().format(data.x),
+                    yValueMapper: (ChartData<DateTime, int> data, _) => data.y,
+                    
+                  ),
+                ],
+              ),
             );
           },
         ),

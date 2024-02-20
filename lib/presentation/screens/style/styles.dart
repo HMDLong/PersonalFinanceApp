@@ -14,21 +14,23 @@ Widget inputLabelWithPadding(String label) =>
   );
 
 
-InputDecoration addRecordFormFieldStyle({
+InputDecoration formFieldDecor({
   Icon? icon, 
   Widget? suffix,
   String? hintText,
+  Widget? label
 }) =>
   InputDecoration(
     contentPadding: const EdgeInsets.symmetric(horizontal: 15.0),
-    prefixIcon: icon,
+    icon: icon,
     suffix: suffix,
     fillColor: Colors.transparent,
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(5.0),
-      borderSide: const BorderSide(width: 0.5),
+    hintText: hintText,
+    label: label,
+    labelStyle: const TextStyle(
+      fontSize: 14,
     ),
-    hintText: hintText
+    floatingLabelBehavior: FloatingLabelBehavior.never
   );
 
 TextStyle inputTextSuffixStyle() => 

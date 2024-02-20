@@ -42,7 +42,7 @@ class _BalanceChartState extends State<BalanceChart> {
         }
       }
     }
-    final chartData = groupByDateData.entries.map((e) => ChartData<DateTime, int>(
+    var chartData = groupByDateData.entries.map((e) => ChartData<DateTime, int>(
       x: e.key,
       y: e.value.isEmpty
          ? 0
@@ -57,6 +57,15 @@ class _BalanceChartState extends State<BalanceChart> {
       }
     );
     // merge points
+    if(chartData.length > 60) {
+      final tmp = <ChartData<DateTime, int>>[];
+      for(var month = 1; month <= 12; month++) {
+        final daysInMonth = chartData.where((e) => e.x.month == month).toList();
+        final monthAvg = daysInMonth.fold(0, (prev, e) => prev + e.y) / daysInMonth.length;
+        tmp.add(ChartData(x: daysInMonth.first.x, y: monthAvg.toInt()));
+      }
+      chartData = tmp;
+    }
     // accmulate tranformation
     if(_filterSetting.valueMode == DisplayValueMode.accumulate) {
       final accumulateChartData = <ChartData<DateTime, int>>[chartData.first];
@@ -95,7 +104,8 @@ class _BalanceChartState extends State<BalanceChart> {
             setState(() {
               _filterSetting.timeRange = newTimeRange;
             });
-          }
+          },
+          allowDay: false,
         ), 
         const Padding(
           padding: EdgeInsets.fromLTRB(15.0, 10.0, 5.0, 5.0),
@@ -132,21 +142,21 @@ class _BalanceChartState extends State<BalanceChart> {
                 plotOffset: 10.0,
                 labelPlacement: LabelPlacement.onTicks,
                 labelAlignment: LabelAlignment.center,
-                plotBands: [
-                  PlotBand(
-                    isVisible: true,
-                    start: DateFormat.MMMd().format(today),
-                    end: DateFormat.MMMd().format(today),
-                    text: "Today",
-                    textAngle: 360,
-                    borderWidth: 1,
-                    borderColor: Colors.black,
-                    dashArray: const <double>[4, 5],
-                    verticalTextAlignment: TextAnchor.start,
-                    shouldRenderAboveSeries: true,
-                    verticalTextPadding: "-4%"
-                  ),
-                ]
+                // plotBands: [
+                //   PlotBand(
+                //     isVisible: true,
+                //     start: DateFormat.MMMd().format(today),
+                //     end: DateFormat.MMMd().format(today),
+                //     text: "Today",
+                //     textAngle: 360,
+                //     borderWidth: 1,
+                //     borderColor: Colors.black,
+                //     dashArray: const <double>[4, 5],
+                //     verticalTextAlignment: TextAnchor.start,
+                //     shouldRenderAboveSeries: true,
+                //     verticalTextPadding: "-4%"
+                //   ),
+                // ]
               ),
               primaryYAxis: NumericAxis(
                 majorGridLines: const MajorGridLines(),
@@ -158,8 +168,8 @@ class _BalanceChartState extends State<BalanceChart> {
                 enablePanning: true,
                 zoomMode: ZoomMode.x,
               ),
-              series: <ColumnSeries<ChartData<DateTime, int>, String>>[
-                ColumnSeries<ChartData<DateTime, int>, String>(
+              series: <SplineSeries<ChartData<DateTime, int>, String>>[
+                SplineSeries<ChartData<DateTime, int>, String>(
                   dataSource: seriesToDisplay,
                   xValueMapper: (ChartData<DateTime, int> data, _) => DateFormat.MMMd().format(data.x),
                   yValueMapper: (ChartData<DateTime, int> data, _) => data.y,
@@ -183,7 +193,7 @@ class _BalanceChartState extends State<BalanceChart> {
                     DisplayContent.income => Colors.green,
                     DisplayContent.balance => Colors.blue
                   },
-                  borderRadius: const BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4))
+                  // borderRadius: const BorderRadius.only(topLeft: Radius.circular(4), topRight: Radius.circular(4))
                 ),
               ],
             );

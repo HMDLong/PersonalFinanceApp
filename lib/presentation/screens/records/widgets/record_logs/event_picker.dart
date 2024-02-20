@@ -26,17 +26,17 @@ class _EventPickerState extends ConsumerState<EventPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        inputLabelWithPadding("Sự kiện"),
-        TextFormField(
-          readOnly: true,
-          controller: controller,
-          decoration: addRecordFormFieldStyle(icon: const Icon(Icons.event_available)),
-          onTap: _selectEvent,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        readOnly: true,
+        controller: controller,
+        decoration: formFieldDecor(
+          icon: const Icon(Icons.event_available),
+          label: const Text("Sự kiện"),
         ),
-      ],
+        onTap: _selectEvent,
+      ),
     );
   }
 

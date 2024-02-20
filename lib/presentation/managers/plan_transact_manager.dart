@@ -23,9 +23,4 @@ class PlanTransactionController {
   List<PlanTransaction> getAll() {
     return _repository.getAll();
   }
-
-  // List<PlanTransaction> getByType() {
-  //   final all = _repository.getAll();
-
-  // }
 }

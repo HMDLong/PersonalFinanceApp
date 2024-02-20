@@ -1,6 +1,8 @@
 import 'package:intl/intl.dart';
 import 'package:saving_app/data/models/category.model.dart';
+import 'package:saving_app/data/models/transaction.model.dart';
 import 'package:saving_app/utils/json.dart';
+import 'package:saving_app/utils/randoms.dart';
 import 'package:saving_app/utils/times.dart';
 
 class PlanTransaction {
@@ -64,10 +66,48 @@ class PlanTransaction {
       id: notificationId, 
       content: "Bạn có lịch cho khoản $title vào hôm nay với số tiền ${NumberFormat.decimalPattern().format(amount)} VND", 
       title: "Nhắc lịch thu chi", 
-      type: period!,
+      type: period,
       referenceDateTime: transactDate!.to9PM(),
     );
   }
+
+  List<Transaction> schedule(TimeRange range) {
+    final res = <Transaction>[];
+    switch(period) {
+      case Periodic.weekly: {
+        for(var date in range.weekdaysOfRange(transactDate!.weekday)) {
+          res.add(Transaction(
+            id: getRandomKey(), 
+            timestamp: date, 
+            amount: amount, 
+            categoryId: categoryId,
+            transactType: transactType,
+            transactAccountId: targetAccount,
+            planTransactId: id,
+            planTransactTitle: title,
+            paid: false,
+          ));
+        }
+      }
+      case Periodic.monthly: {
+        for(var date in range.monthdaysOfRange(transactDate!.day)) {
+          res.add(Transaction(
+            id: id, 
+            timestamp: date, 
+            amount: amount, 
+            categoryId: categoryId, 
+            transactType: transactType,
+            transactAccountId: targetAccount,
+            planTransactId: id,
+            planTransactTitle: title,
+            paid: false,
+          ));
+        }
+      }
+      default: {}
+    }
+    return res;
+  } 
 }
 
 enum Periodic {
@@ -78,7 +118,10 @@ enum Periodic {
   yearly,
 }
 
-Periodic? jsonToPeriodic(String json) {
+Periodic? jsonToPeriodic(String? json) {
+  if(json == null) {
+    return null;
+  }
   for(var value in Periodic.values) {
     if(value.toString() == json) return value;
   }
@@ -110,7 +153,7 @@ class ScheduledNotification {
   int id;
   String content = "";
   String title;
-  Periodic type;
+  Periodic? type;
   DateTime referenceDateTime;
 
   Map<String, String> get payload => {

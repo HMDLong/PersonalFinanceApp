@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_boxicons/flutter_boxicons.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:saving_app/data/models/accounts.model.dart';
 import 'package:saving_app/presentation/screens/shared_widgets/progress_gauge.dart';
 
-class DebtCard extends StatefulWidget {
+class DebtCard extends ConsumerStatefulWidget {
   final Debt debt;
-  const DebtCard({super.key, required this.debt});
+  final bool snowballBoost;
+  final int? boostAmount;
+  const DebtCard({super.key, required this.debt, this.snowballBoost = false, this.boostAmount});
 
   @override
-  State<DebtCard> createState() => _DebtCardState();
+  ConsumerState<DebtCard> createState() => _DebtCardState();
 }
 
-class _DebtCardState extends State<DebtCard> {
+class _DebtCardState extends ConsumerState<DebtCard> {
   @override
   Widget build(BuildContext context) {
     final formatDecimal = NumberFormat.decimalPattern().format;
@@ -28,15 +32,54 @@ class _DebtCardState extends State<DebtCard> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "${widget.debt.title}",
-              ),
-              Text(
-                "${formatDecimal(widget.debt.amount)} VND",
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 6,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "${widget.debt.title}",
+                        ),
+                        Text(
+                          "${formatDecimal(widget.debt.amount)} VND",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: widget.snowballBoost
+                    ? Card(
+                      color: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)
+                      ),
+                      elevation: 4,
+                      child: const SizedBox(
+                        height: 30,
+                        width: 60,
+                        child: Padding(
+                          padding: EdgeInsets.all(4),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Boxicons.bxs_upvote, color: Colors.white, size: 16,),
+                              SizedBox(width: 4,),
+                              Text("Tập trung", style: TextStyle(color: Colors.white, fontSize: 12),)
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                    : const SizedBox(width: 0.1,)
+                  ),
+                ],
               ),
               const SizedBox(height: 10,),
               const Text("Tiến trình trả tháng này"),

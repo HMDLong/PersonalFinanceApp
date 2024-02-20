@@ -138,8 +138,8 @@ class PlanController extends ChangeNotifier {
     return res;
   }
 
-  TransactCategory? getCategoryById(String id){
-    return _categoryRepository.getAt(id);
+  CustomCategory? getCategoryById(String id){
+    return _categoryRepository.getById(id);
   }
 
   CategoryGroup? getGroupCategoryBySubId(String id) {

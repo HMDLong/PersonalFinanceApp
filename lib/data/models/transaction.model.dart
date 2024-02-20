@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:saving_app/data/models/category.model.dart';
 
 part 'transaction.model.g.dart';
 
@@ -20,15 +21,24 @@ class Transaction extends HiveObject {
   String? targetAccountId;
   @HiveField(7)
   String? planTransactId;
+  @HiveField(8)
+  String? planTransactTitle;
+  @HiveField(9)
+  TransactionType transactType;
+  @HiveField(10)
+  bool paid;
 
   Transaction({
     required this.id,
     required this.timestamp,
     required this.amount,
     required this.categoryId,
+    required this.transactType,
+    this.paid = true,
     this.transactAccountId,
     this.targetAccountId,
     this.description,
     this.planTransactId,
+    this.planTransactTitle,
   });
 }

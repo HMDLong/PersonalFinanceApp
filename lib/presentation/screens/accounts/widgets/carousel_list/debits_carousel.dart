@@ -91,10 +91,10 @@ class _DebitListTile extends StatelessWidget {
       ),
       title: Text(
         "${debit.title}",
-        style: const TextStyle(
-          color: Colors.black54,
-          fontSize: 12,
-        ),
+        // style: const TextStyle(
+        //   color: Colors.black54,
+        //   fontSize: 12,
+        // ),
       ),
       trailing: IconButton(
         onPressed: () => _accountDetail(context, debit), 

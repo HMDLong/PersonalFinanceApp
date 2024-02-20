@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 String toFullVnDateTime(DateTime time) {
   return "${time.day} Th${time.month}, ${time.year}";
 }
@@ -8,4 +10,8 @@ String toFullVnTimeStamp(DateTime time) {
 
 String toVnMonthYear(DateTime time) {
   return "Th${time.month} ${time.year}";
+}
+
+String amountToDecimal(int amount, {String? currency = "VND"}) {
+  return "${NumberFormat.decimalPattern().format(amount)} $currency";
 }

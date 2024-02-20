@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_boxicons/flutter_boxicons.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:saving_app/constants/constants.dart';
 import 'package:saving_app/data/local/model_repos/account/account_repo.dart';
 import 'package:saving_app/data/models/accounts.model.dart';
 import 'package:saving_app/data/models/transaction.model.dart';
+import 'package:saving_app/presentation/screens/accounts/widgets/details/debit/edit_account.dart';
 import 'package:saving_app/presentation/screens/accounts/widgets/details/total_balance_chart.dart';
 import 'package:saving_app/presentation/screens/records/widgets/record_logs/transaction_card.dart';
 
@@ -31,7 +33,10 @@ class _CreditDetailState extends State<CreditDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const Icon(CupertinoIcons.back, color: Colors.black,),
+        leading: IconButton(
+          icon: const Icon(CupertinoIcons.back, color: Colors.black,),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: const Text(
           "Chi tiết tài khoản",
           style: TextStyle(
@@ -52,7 +57,7 @@ class _CreditDetailState extends State<CreditDetail> {
                 context: context, 
                 builder: (context) => AlertDialog(
                   content: SizedBox(
-                    height: 60,
+                    height: 40,
                     width: 100,
                     child: Center(
                       child: Text("Xóa ${widget.credit.title}?"),
@@ -74,10 +79,7 @@ class _CreditDetailState extends State<CreditDetail> {
                 ) 
               );
             }, 
-            icon: IconButton(
-              icon: const Icon(Icons.delete, color: Colors.black,),
-              onPressed: () => Navigator.of(context).pop(),
-            )
+            icon: const Icon(Icons.delete, color: Colors.black,),
           )
         ],
       ),
@@ -118,6 +120,8 @@ class _CreditDetailState extends State<CreditDetail> {
           AccountBalanceChart(
             boxListenable: transactionBox.listenable(), 
             account: widget.credit,
+            height: 180,
+            width: double.infinity
           ),
           const SizedBox(height: 10,),
           const Padding(
@@ -153,5 +157,6 @@ class _CreditDetailState extends State<CreditDetail> {
   }
 
   void _editCredit() {
+    pushNewScreen(context, screen: EditAccountScreen(account: widget.credit));
   }
 }

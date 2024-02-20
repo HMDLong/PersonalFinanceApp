@@ -38,16 +38,17 @@ class _RecordLogsState extends State<RecordLogs>{
     List<Transaction> filteredTransactions = transactionsBox.values
     .where((transaction) =>
       // filter by choosen time
-      _currentTime.contain(transaction.timestamp)
+      _currentTime.contain(transaction.timestamp) && transaction.paid
       // true
     ).where((transaction) {
       // filter by transaction type: expense/income
         var transactType = type ?? _currentTransactionTab;
-        return switch(transactType) {
-          TransactionType.expense => transaction.amount < 0,
-          TransactionType.income => transaction.amount > 0,
-          _ => true,
-        };
+        return transaction.transactType == transactType;
+        // return switch(transactType) {
+        //   TransactionType.expense => transaction.amount < 0,
+        //   TransactionType.income => transaction.amount > 0,
+        //   _ => true,
+        // };
       }
     ).toList();
     filteredTransactions.sort(((a, b) =>

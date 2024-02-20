@@ -49,6 +49,7 @@ class DemoPanel extends StatelessWidget {
             : -1
           ), 
           categoryId: cate.id!,
+          transactType: cate.type!
         );
       }
     );

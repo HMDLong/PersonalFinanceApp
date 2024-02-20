@@ -24,7 +24,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
         TextFormField(
           controller: _datePickerController,
           readOnly: true,
-          decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.calendar)),
+          decoration: formFieldDecor(icon: const Icon(CupertinoIcons.calendar)),
           onTap: _selectDate,
           validator: (value) {
             if(value == null || value.isEmpty) {

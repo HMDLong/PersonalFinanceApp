@@ -10,6 +10,8 @@ import 'package:saving_app/data/models/transaction.model.dart';
 import 'package:saving_app/data/local/model_repos/account/account_repo.dart';
 import 'package:saving_app/presentation/screens/accounts/widgets/details/debit/edit_account.dart';
 import 'package:saving_app/presentation/screens/accounts/widgets/details/total_balance_chart.dart';
+import 'package:saving_app/presentation/screens/accounts/widgets/transaction_list.dart';
+import 'package:saving_app/presentation/screens/style/styles.dart';
 
 class DebitDetailScreen extends StatefulWidget {
   final Account account;
@@ -32,7 +34,10 @@ class _DebitDetailScreenState extends State<DebitDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const Icon(CupertinoIcons.back, color: Colors.black,),
+        leading: IconButton(
+          icon: const Icon(CupertinoIcons.back, color: Colors.black,),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: const Text(
           "Chi tiết tài khoản",
           style: TextStyle(
@@ -53,7 +58,7 @@ class _DebitDetailScreenState extends State<DebitDetailScreen> {
                 context: context, 
                 builder: (context) => AlertDialog(
                   content: SizedBox(
-                    height: 60,
+                    height: 40,
                     width: 100,
                     child: Center(
                       child: Text("Xóa ${widget.account.title}?"),
@@ -104,7 +109,11 @@ class _DebitDetailScreenState extends State<DebitDetailScreen> {
           AccountBalanceChart(
             boxListenable: transactionBox.listenable(), 
             account: widget.account,
+            height: 180,
+            width: double.infinity,
           ),
+          inputLabelWithPadding("Giao dịch liên quan"),
+          TransactionList(transactionBox: transactionBox, account: widget.account)
         ],
       ),
     );

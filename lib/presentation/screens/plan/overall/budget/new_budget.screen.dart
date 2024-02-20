@@ -12,15 +12,16 @@ import 'package:saving_app/domain/providers/category_provider.dart';
 import 'package:saving_app/presentation/managers/plan_manager.dart';
 import 'package:saving_app/presentation/screens/shared_widgets/category_picker.dart';
 import 'package:saving_app/presentation/screens/style/styles.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NewBudgetScreen extends StatefulWidget {
+class NewBudgetScreen extends ConsumerStatefulWidget {
   const NewBudgetScreen({super.key});
 
   @override
-  State<NewBudgetScreen> createState() => _NewBudgetScreenState();
+  ConsumerState<NewBudgetScreen> createState() => _NewBudgetScreenState();
 }
 
-class _NewBudgetScreenState extends State<NewBudgetScreen> {
+class _NewBudgetScreenState extends ConsumerState<NewBudgetScreen> {
   final _formKey = GlobalKey<FormState>();
   final Map<String, dynamic> _formData = {};
   late PlanController manager;
@@ -140,7 +141,7 @@ class _NewBudgetScreenState extends State<NewBudgetScreen> {
                   TextFormField(
                     controller: _controller,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: addRecordFormFieldStyle(
+                    decoration: formFieldDecor(
                       icon: const Icon(CupertinoIcons.money_dollar),
                       suffix: const Text("VND")
                     ),

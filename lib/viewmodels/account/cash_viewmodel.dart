@@ -15,7 +15,8 @@ class CashViewModel extends ChangeNotifier {
 
   Future<void> addCash(int amount) async {
     final newCash = (await getCurrentCash()) + amount;
-    _repo.setCashAmount(newCash);
+    await _repo.setCashAmount(newCash);
+    notifyListeners();
   }
 }
 

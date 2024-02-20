@@ -63,6 +63,7 @@ class _TransactionInputState extends State<TransactionInput>{
           TransactionType.income  => 1,
           _ => 1,
         },
+        transactType: _formData["transactType"],
         transactAccountId: _formData["sourceAcc"],
         targetAccountId: _formData["targetAcc"],
         categoryId: _formData["category"],
@@ -87,6 +88,7 @@ class _TransactionInputState extends State<TransactionInput>{
         "category": transaction.categoryId,
         "targetAcc": transaction.targetAccountId,
         "des": transaction.description,
+        "transactType": transaction.transactType,
       };
       _categoryController.text = "${CategoryRepository().getAt(transaction.categoryId)!.name}";
       Future.delayed(Duration.zero, () {
@@ -141,7 +143,7 @@ class _TransactionInputState extends State<TransactionInput>{
                   TextFormField(
                     initialValue: "${(_formData["amount"] as int).abs()}",
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.money_dollar)),
+                    decoration: formFieldDecor(icon: const Icon(CupertinoIcons.money_dollar)),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if(value == null || value.isEmpty) {
@@ -161,21 +163,21 @@ class _TransactionInputState extends State<TransactionInput>{
                   TextFormField(
                     controller: _datePickerController,
                     readOnly: true,
-                    decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.calendar)),
+                    decoration: formFieldDecor(icon: const Icon(CupertinoIcons.calendar)),
                     onTap: _selectDate,
                   ),
                   inputLabelWithPadding("Loại"),
                   TextFormField(
                     controller: _categoryController,
                     readOnly: true,
-                    decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.circle_grid_hex)),
+                    decoration: formFieldDecor(icon: const Icon(CupertinoIcons.circle_grid_hex)),
                     onTap: _selectCategory,
                   ),
                   inputLabelWithPadding("Tài khoản nguồn"),
                   TextFormField(
                     controller: _sourceAccController,
                     readOnly: true,
-                    decoration: addRecordFormFieldStyle(icon: const Icon(Boxicons.bx_wallet)),
+                    decoration: formFieldDecor(icon: const Icon(Boxicons.bx_wallet)),
                     onTap: () => _selectAccount(_sourceAccController, "sourceAcc"),
                   ),
                   (
@@ -188,7 +190,7 @@ class _TransactionInputState extends State<TransactionInput>{
                             TextFormField(
                               controller: _targetAccController,
                               readOnly: true,
-                              decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.circle_grid_hex)),
+                              decoration: formFieldDecor(icon: const Icon(CupertinoIcons.circle_grid_hex)),
                               onTap: () => _selectAccount(_targetAccController, "targetAcc"),
                             )
                           ]
@@ -200,7 +202,7 @@ class _TransactionInputState extends State<TransactionInput>{
                   TextFormField(
                     initialValue: _formData["des"],
                     keyboardType: TextInputType.text,
-                    decoration: addRecordFormFieldStyle(icon: const Icon(Icons.textsms_outlined)),
+                    decoration: formFieldDecor(icon: const Icon(Icons.textsms_outlined)),
                     onSaved: (newValue) {
                       _formData["des"] = newValue;
                     },

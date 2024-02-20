@@ -7,8 +7,9 @@ import 'package:saving_app/data/models/plan/debt_strat.dart';
 import 'package:saving_app/presentation/screens/accounts/new_account.screen.dart';
 import 'package:saving_app/presentation/screens/plan/overall/debts/debt_card.dart';
 import 'package:saving_app/presentation/screens/style/styles.dart';
+import 'package:saving_app/utils/times.dart';
 import 'package:saving_app/viewmodels/account/debt_viewmodel.dart';
-import 'package:saving_app/viewmodels/plan_setting_viewmodel.dart';
+import 'package:saving_app/viewmodels/plan/plan_setting_viewmodel.dart';
 
 class DebtsScreen extends ConsumerStatefulWidget {
   const DebtsScreen({super.key});
@@ -61,26 +62,31 @@ class _DebtsScreenState extends ConsumerState<DebtsScreen> {
                   );
                 }
               ),
-              
               const SizedBox(height: 10,),
               const Text("Tiến trình tháng này"),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    NumberFormat.decimalPattern().format(100000000),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  Text(
-                    "/${NumberFormat.decimalPattern().format(100000000)} VND",
-                    style: const TextStyle(
-                      color: Colors.black54,
-                    ),
-                  ),
-                ],
+              Consumer(
+                builder: (context, ref, _) {
+                  final debtPayThisMonth = ref.watch(totalDebtPaidProvider(getRangeOfTheMonth()));
+                  final debtToPayThisMonth = ref.watch(totalDebtToPay(getRangeOfTheMonth()));
+                  return Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        NumberFormat.decimalPattern().format(debtPayThisMonth),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Text(
+                        "/${NumberFormat.decimalPattern().format(debtToPayThisMonth)} VND",
+                        style: const TextStyle(
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
+                  );
+                }
               ),
               const SizedBox(height: 10,),
               Row(
@@ -132,12 +138,11 @@ class _DebtsScreenState extends ConsumerState<DebtsScreen> {
               ),
               Wrap(
                 spacing: 7.0,
-                children: ["Các khoản nợ", "Lộ trình","Biểu đồ cầu tuyết"].asMap().map(
+                children: ["Các khoản nợ", "Lộ trình", "Biểu đồ cầu tuyết"].asMap().map(
                   (key, value) => MapEntry(key, ChoiceChip(
-                    selectedColor: Colors.blue.shade300,
-                    side: const BorderSide(width: 0.5),
-                    backgroundColor: Colors.transparent,
-                    label: Text(value),
+                    selectedColor: Colors.blue,
+                    backgroundColor: Colors.pink.shade50,
+                    label: Text(value, style: TextStyle(color: key == _selectedTab ? Colors.white : Colors.black),),
                     selected: key == _selectedTab,
                     onSelected: (_) {
                       setState(() {
@@ -177,7 +182,7 @@ class _DebtsScreenState extends ConsumerState<DebtsScreen> {
   
   _debtsList(List<Debt> debts) {
     return Column(
-      children: debts.map((e) => DebtCard(debt: e)).toList(),
+      children: debts.map((e) => DebtCard(debt: e, snowballBoost: true,)).toList(),
     );
   }
   
@@ -188,14 +193,4 @@ class _DebtsScreenState extends ConsumerState<DebtsScreen> {
   _schedule() {
     return const Placeholder();
   }
-  
-  // List<DataEntry> _debtsToDataEntry(List<Debt> debts) {
-  //   return debts.map((e) => DataEntry(
-  //     totalDebt: e.amount!, 
-  //     paidAmount: 0, 
-  //     baseAmount: (e.amount! * 0.01).toInt(), 
-  //     rate: 0.1, 
-  //     interest: e.amount!)
-  //   ).toList();
-  // }
 }

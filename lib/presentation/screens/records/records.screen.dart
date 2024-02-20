@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:saving_app/presentation/screens/records/add_record.screen.dart';
 import 'package:saving_app/presentation/screens/shared_widgets/title.dart';
 // import 'package:saving_app/screens/styles.dart';
 // import 'package:intl/intl.dart';
@@ -30,19 +32,19 @@ class _RecordScreenState extends State<RecordScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
       ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0,),
-          children: const [
-            NoticationBox(),
-            SizedBox(height: 10,),
-            ContentTitle(label: "Ngân quỹ hiện tại"),
-            BudgetsCarousel(),
-            SizedBox(height: 10,),
-            ContentTitle(label: "Nhật ký thu chi"),
-            RecordLogs(),
-          ],
+      body: const SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: SingleChildScrollView(
+            child: RecordLogs(),
+          ),
         )
+      ),
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: () {
+          pushNewScreen(context, screen: const AddRecordScreen());
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }

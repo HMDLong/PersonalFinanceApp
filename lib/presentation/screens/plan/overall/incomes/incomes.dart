@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:saving_app/presentation/screens/plan/plan_transact/plan_transaction.tab.dart';
+import 'package:saving_app/presentation/screens/shared_widgets/progress_gauge.dart';
 import 'package:saving_app/utils/times.dart';
 import 'package:saving_app/viewmodels/transact/plan_transact_viewmodel.dart';
 import 'package:saving_app/viewmodels/transact/transact_viewmodel.dart';
@@ -17,7 +18,7 @@ class IncomesSection extends ConsumerStatefulWidget {
 class _IncomesSectionState extends ConsumerState<IncomesSection> {
   @override
   Widget build(BuildContext context) {
-    final expectedTotalIncome = ref.watch(totalIncomeProvider);
+    final expectedTotalIncome = ref.watch(totalExpectedIncomeProvider(getRangeOfTheMonth()));
     final actualCurrentIncome = ref.watch(totalActualIncomeProvider(getRangeOfTheMonth()));
     return GestureDetector(
       onTap: () {
@@ -56,33 +57,20 @@ class _IncomesSectionState extends ConsumerState<IncomesSection> {
                 ],
               ),
               const SizedBox(height: 10),
-              expectedTotalIncome.when(
-                data: (data) => data > 0 ?
-                Row(
+              // expectedTotalIncome.when(
+              //   data: (data) => data > 0 ?
+              expectedTotalIncome > 0 ?
+                Column(
                   children: [
                     const Text("Thu nhập tháng này"),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              NumberFormat.decimalPattern().format(actualCurrentIncome),
-                              style: const TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                            Text(
-                              "/${NumberFormat.decimalPattern().format(data)} VND",
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Colors.black54
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ),
+                    LinearProgressGauge(
+                      value: actualCurrentIncome, 
+                      max: expectedTotalIncome,
+                      leadingLabel: "Thực thu",
+                      trailingLabel: "Dự kiến",
+                      showOverflow: true,
+                      mode: GaugeMode.goodOverflow,
+                    )
                   ],
                 )
                 : const SizedBox(
@@ -108,9 +96,9 @@ class _IncomesSectionState extends ConsumerState<IncomesSection> {
                       ]
                     ),
                   ),
-                error: (error, stackTrace) => Text("$error"),
-                loading: () => const Center(child: CircularProgressIndicator()),
-              )
+              //   error: (error, stackTrace) => Text("$error"),
+              //   loading: () => const Center(child: CircularProgressIndicator()),
+              // )
             ],
           ),
         ),

@@ -24,17 +24,17 @@ class _AccountPickerState extends State<AccountPicker> {
   
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        inputLabelWithPadding(widget.label ?? "Tài khoản"),
-        TextFormField(
-          controller: _controller,
-          readOnly: true,
-          decoration: addRecordFormFieldStyle(icon: const Icon(Boxicons.bx_wallet)),
-          onTap: () => _selectAccount(_controller, "sourceAcc"),
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextFormField(
+        controller: _controller,
+        readOnly: true,
+        decoration: formFieldDecor(
+          icon: const Icon(Boxicons.bx_wallet),
+          label: Text(widget.label ?? "Tài khoản nguồn"),
         ),
-      ],
+        onTap: () => _selectAccount(_controller, "sourceAcc"),
+      ),
     );
   }
 

@@ -1,5 +1,6 @@
 import 'package:saving_app/data/models/category.model.dart';
 import 'package:saving_app/data/models/plan_transaction.model.dart';
+import 'package:saving_app/data/models/transaction.model.dart';
 import 'package:saving_app/utils/randoms.dart';
 
 class Account {
@@ -157,15 +158,15 @@ class Debt extends Account {
     return "Debt{$id/$title/$amount/$payment}";
   }
 
-  PlanTransaction makePlanTransaction() {
-    return PlanTransaction(
+  Transaction scheduleTransaction() {
+    return Transaction(
       id: id!, 
-      title: title!, 
+      planTransactTitle: title,
       amount: amount!, 
       categoryId: "",
-      targetAccount: id!,
+      targetAccountId: id!,
       transactType: TransactionType.transact,
-      transactDate: payment.payDate,
+      timestamp: payment.payDate,
     );
   }
 }
@@ -229,22 +230,24 @@ sealed class Payment {
 
   Map<String, dynamic> toJson();
   double getLatePayment(int amount);
-
   DateTime get payDate;
+  int get minimumPayment;
 }
 
 class Installment extends Payment {
   static const String type = 'installment';
   int? period;
-  int? phase;
+  // int? phase;
   double? originInterest;
+  int? minPayment;
   DateTime? phaselyDuedate;
   
   Installment({
     this.period,
-    this.phase,
+    // this.phase,
     this.originInterest,
     this.phaselyDuedate,
+    this.minPayment,
   });
   
   @override
@@ -252,14 +255,16 @@ class Installment extends Payment {
   {
     "type": type,
     "period": period,
-    "phase": phase,
+    // "phase": phase,
     "interest": originInterest,
+    "min": minPayment,
     "duedate": phaselyDuedate!.toIso8601String(),
   };
 
   Installment.fromJson(Map<String, dynamic> json) {
     period = json["period"] as int;
-    phase = json["phase"] as int;
+    minPayment = json["min"] as int;
+    // phase = json["phase"] as int;
     originInterest = json["interest"] as double;
     phaselyDuedate = DateTime.parse(json["duedate"] as String);
   }
@@ -272,18 +277,23 @@ class Installment extends Payment {
 
   @override
   String toString() {
-    return "Installment{$type, $period, $phase, $originInterest, $phaselyDuedate}";
+    return "Installment{$type, $period, phase, $originInterest, $phaselyDuedate}";
   }
+  
+  @override
+  int get minimumPayment => minPayment!;
 }
 
 class Infull extends Payment {
   static const String type = 'infull';
   DateTime? duedate;
   double? lateInterest;
+  int? minPayment;
 
   Infull({
     this.duedate,
     this.lateInterest,
+    this.minPayment,
   });
 
   @override
@@ -291,12 +301,14 @@ class Infull extends Payment {
   {
     "type": type,
     "interest": lateInterest,
+    "min": minPayment,
     "duedate": duedate!.toIso8601String(),
   };
 
   Infull.fromJson(Map<String, dynamic> json) {
     duedate = DateTime.parse(json["duedate"] as String);
     lateInterest = json["interest"] as double;
+    minPayment = json["min"] as int;
   }
   
   @override
@@ -309,5 +321,8 @@ class Infull extends Payment {
   
   @override
   DateTime get payDate => duedate!;
+  
+  @override
+  int get minimumPayment => minPayment!;
 }
 

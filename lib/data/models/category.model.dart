@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:saving_app/utils/json.dart';
+
+part 'category.model.g.dart';
 
 class CustomCategory {
   String? id;
@@ -61,7 +64,7 @@ class CategoryGroup extends CustomCategory {
 class TransactCategory extends CustomCategory{
   TransactCategory({
     required super.id,
-    required super.name, 
+    required super.name,
     required super.type, 
     required super.icon,
     super.budget,
@@ -88,9 +91,13 @@ class TransactCategory extends CustomCategory{
   }
 }
 
-enum TransactionType { 
+@HiveType(typeId: 1)
+enum TransactionType {
+  @HiveField(0) 
   expense,
+  @HiveField(1)
   income,
+  @HiveField(2)
   transact,
 }
 

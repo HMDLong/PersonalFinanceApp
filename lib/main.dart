@@ -8,6 +8,7 @@ import "package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart";
 import 'package:saving_app/constants/constants.dart';
 import 'package:saving_app/data/local/model_repos/records/transact_repo.dart';
 import 'package:saving_app/data/local/repository_impl/category_repo_impl.dart';
+import 'package:saving_app/data/models/category.model.dart';
 import 'package:saving_app/data/models/transaction.model.dart';
 import 'package:saving_app/data/local/model_repos/records/category_repository.dart';
 import 'package:saving_app/data/local/model_repos/budget/budget_json_repo.dart';
@@ -16,12 +17,12 @@ import 'package:saving_app/data/local/model_repos/account/debit_repo.dart';
 import 'package:saving_app/data/local/model_repos/account/savings_repo.dart';
 import 'package:saving_app/data/local/model_repos/plan_transact/plan_transact_repo.dart';
 import 'package:saving_app/domain/providers/category_provider.dart';
+import 'package:saving_app/presentation/screens/home/home.dart';
 import 'package:saving_app/services/notification_service.dart';
 import 'package:saving_app/presentation/managers/category_manager.dart';
 import 'package:saving_app/presentation/managers/plan_manager.dart';
 import 'package:saving_app/presentation/managers/transaction_manager.dart';
 import 'package:saving_app/presentation/screens/accounts/accounts.screen.dart';
-import 'package:saving_app/presentation/screens/records/records.screen.dart';
 import 'package:saving_app/presentation/screens/stats/stats.screen.dart';
 import 'presentation/screens/more/more.screen.dart';
 import 'presentation/screens/plan/plan.screen.dart';
@@ -35,6 +36,7 @@ Future<void> initFlutter() async {
   // Init Hive
   await Hive.initFlutter();
   Hive.registerAdapter(TransactionAdapter());
+  Hive.registerAdapter(TransactionTypeAdapter());
   await Hive.openBox<Transaction>(transactionBoxName);
   // Init AwesomeNotification
   NotificationService.initialize();
@@ -54,7 +56,8 @@ class _MyAppState extends State<MyApp> {
 
   List<Widget> _buildScreens() => 
   [
-    const RecordScreen(),
+    // const RecordScreen(),
+    const HomeScreen(),
     const StatisticsScreen(),
     const AccountsScreen(),
     const PlanScreen(),

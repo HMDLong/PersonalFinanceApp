@@ -62,19 +62,24 @@ class _CategoryPickerState extends State<CategoryPicker> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        inputLabelWithPadding(widget.label ?? "Loại"),
-        TextFormField(
-          controller: _categoryController,
-          readOnly: true,
-          autovalidateMode: AutovalidateMode.onUserInteraction,
-          decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.circle_grid_hex)),
-          onTap: _selectCategory,
-          validator: widget.validator,
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextFormField(
+            controller: _categoryController,
+            readOnly: true,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            decoration: formFieldDecor(
+              icon: const Icon(CupertinoIcons.circle_grid_hex),
+              label: Text(widget.label ?? "Loại"),
+            ),
+            onTap: _selectCategory,
+            validator: widget.validator,
+          ),
+        ],
+      ),
     );
   }
 }

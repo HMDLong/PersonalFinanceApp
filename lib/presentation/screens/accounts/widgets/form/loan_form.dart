@@ -54,10 +54,11 @@ class _NewLoanFormState extends ConsumerState<NewLoanForm> {
           PaymentType.infull => Infull(
             duedate: _formData["duedate"],
             lateInterest: _formData["interest"],
+            minPayment: (_formData["amount"] ?? 0) * -1
           ),
           PaymentType.installment => Installment(
+            minPayment: _formData["min_payment"],
             period: _formData["period"],
-            phase: _formData["phase"],
             originInterest: _formData["interest"],
             phaselyDuedate: _formData["duedate"],
           ),
@@ -96,7 +97,7 @@ class _NewLoanFormState extends ConsumerState<NewLoanForm> {
           children: [
             inputLabelWithPadding("Tiêu đề"),
             TextFormField(
-              decoration: addRecordFormFieldStyle(icon: const Icon(Icons.title)),
+              decoration: formFieldDecor(icon: const Icon(Icons.title)),
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) {
                 if(value == null || value.isEmpty) {
@@ -109,7 +110,7 @@ class _NewLoanFormState extends ConsumerState<NewLoanForm> {
             inputLabelWithPadding("Số tiền nợ"),
             TextFormField(
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.money_dollar)),
+              decoration: formFieldDecor(icon: const Icon(CupertinoIcons.money_dollar)),
               keyboardType: TextInputType.number,
               validator: (value) => numericValidator(value, "amount"),
             ),
@@ -159,13 +160,14 @@ class _NewLoanFormState extends ConsumerState<NewLoanForm> {
               PaymentType.infull => InfullForm(onDataChanged: (duedate, interest){
                 if(duedate != null) _formData["duedate"] = duedate;
                 if(interest != null) _formData["interest"] = interest;
+                
               }),
               PaymentType.installment => InstallmentForm(
                 formData: _formData,
-                onDataChanged: (period, phase, duedate, interest) {
+                onDataChanged: (period, minPayment, duedate, interest) {
                   if(duedate != null) _formData["duedate"] = duedate;
                   if(interest != null) _formData["interest"] = interest;
-                  if(phase != null)_formData["phase"] = phase;
+                  if(minPayment != null)_formData["min_payment"] = minPayment;
                   if(period != null) _formData["period"] = period;
                 }
               ),

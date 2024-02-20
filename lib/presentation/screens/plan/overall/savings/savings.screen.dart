@@ -31,12 +31,14 @@ class _SavingScreenState extends ConsumerState<SavingScreen> {
       body: switch(asyncSavings){
         AsyncData(:final value) => 
         value.isEmpty
-        ? const Center(
-          child: Column(
-            children: [
-              Text("Chưa có thông tin", style: TextStyle(color: Colors.black54)),
-              Text("Thêm thông tin để được hỗ trợ theo dõi", style: TextStyle(color: Colors.black54)),
-            ],
+        ? const SizedBox.expand(
+          child: Center(
+            child: Column(
+              children: [
+                Text("Chưa có thông tin", style: TextStyle(color: Colors.black54)),
+                Text("Thêm thông tin để được hỗ trợ theo dõi", style: TextStyle(color: Colors.black54)),
+              ],
+            ),
           ),
         )
         : Padding(

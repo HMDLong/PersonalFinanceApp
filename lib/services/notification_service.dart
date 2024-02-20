@@ -69,7 +69,8 @@ class NotificationService extends ChangeNotifier {
         Periodic.weekly => NotificationAndroidCrontab.weekly(referenceDateTime: noti.referenceDateTime),
         Periodic.monthly => NotificationAndroidCrontab.monthly(referenceDateTime: noti.referenceDateTime),
         Periodic.yearly => NotificationAndroidCrontab.yearly(referenceDateTime: noti.referenceDateTime),
-        Periodic.onetime => null,
+        Periodic.onetime => NotificationAndroidCrontab.fromDate(date: noti.referenceDateTime),
+        null => null
       },
       content: NotificationContent(
         id: noti.id, 

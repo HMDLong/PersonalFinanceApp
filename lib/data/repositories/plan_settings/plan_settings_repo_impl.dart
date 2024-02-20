@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saving_app/data/models/plan/debt_strat.dart';
 import 'package:saving_app/data/models/plan/income_dist.dart';
@@ -17,10 +15,8 @@ class PlanSettingRepositoryImpl extends PlanSettingRepository {
     final sharedRef = await SharedPreferences.getInstance();
     final strData = sharedRef.getString(dataKey);
     if(strData != null) {
-      print("strData=$strData");
       return PlanSetting.fromJsonString(strData);
     }
-    print("strData=null");
     final newPlanSetting = PlanSetting();
     newPlanSetting.strategy = SnowballStrategy();
     newPlanSetting.incomeDist = Distribution532();

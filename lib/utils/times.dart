@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:intl/intl.dart';
 
 class TimeRange {
@@ -33,6 +35,24 @@ class TimeRange {
     final rangeDuration = duration;
     return List<DateTime>.generate(rangeDuration + 1, (index) => start.add(Duration(days: index)));
   }
+
+  List<DateTime> weekdaysOfRange(int weekday) {
+    final res = <DateTime>[];
+    final dist = weekday - start.weekday;
+    var occurence = start.add(Duration(days: dist >= 0 ? dist : dist + 7));
+    while(occurence.isBefore(end)) {
+      res.add(occurence);
+      occurence = occurence.add(const Duration(days: 7));
+    }
+    return res;
+  }
+
+  List<DateTime> monthdaysOfRange(int monthday) {
+    final res = <DateTime>[];
+    final daysInMonth = getDaysInMonth(start.year, start.month);
+    res.add(DateTime(start.year, start.month, min(monthday, daysInMonth)));
+    return res;
+  }
 }
 
 extension TimeRangeExt on DateTime {
@@ -44,7 +64,7 @@ extension TimeRangeExt on DateTime {
     return DateTime(year, month, day, 21, 0, 0);
   }
 
-    DateTime to9AM(){
+  DateTime to9AM(){
     return DateTime(year, month, day, 9, 0, 0);
   }
 }

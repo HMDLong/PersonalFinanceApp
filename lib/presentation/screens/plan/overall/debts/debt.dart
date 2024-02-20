@@ -72,16 +72,19 @@ class _DebtSectionState extends ConsumerState<DebtSection> {
                         ),
                       ),
                     ),
-                    // Text("Trạng thái: ${ref.read(debtsControlProvider.notifier).debtStatus}"),
                     const SizedBox(height: 10,),
                     const Text("Tiến trình tháng"),
                     const SizedBox(height: 4,),
                     Consumer(
                       builder: (context, ref, child) {
                         final totalDebtPaidThisMonth = ref.watch(totalDebtPaidProvider(getRangeOfTheMonth()));
-                        final totalDebtToPayThisMonth = ref.watch(totalDebtToPay(getRangeOfTheMonth()));
+                        final totalDebtToPayThisMonth = ref.watch(totalDebtToPay(getRangeOfTheMonth())).when(
+                          data: (data) => data, 
+                          error: (error, _) => throw error, 
+                          loading: () => 0
+                        );
                         return LinearProgressGauge(
-                          value: totalDebtPaidThisMonth.abs(), 
+                          value: totalDebtPaidThisMonth.abs(),
                           max: totalDebtToPayThisMonth.abs(),
                           leadingLabel: "Đã trả",
                           trailingLabel: "Còn lại",

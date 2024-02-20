@@ -6,11 +6,13 @@ import 'package:saving_app/utils/times.dart';
 class CustomTimePicker extends StatefulWidget {
   final TimeType initialTimeType;
   final void Function(TimeRange value) onTimeChanged;
+  final bool allowDay;
 
   const CustomTimePicker({
     Key? key,
     this.initialTimeType = TimeType.day,
-    required this.onTimeChanged, 
+    this.allowDay = true,
+    required this.onTimeChanged,
   }) : super(key: key);
 
   @override
@@ -24,28 +26,28 @@ enum TimeType {
   year,
 }
 
-List<Map<String, dynamic>> timeTypeList = [
-  {
-    "value": TimeType.day,
-    "name": "Ngày",
-  },
-  {
-    "value": TimeType.week,
-    "name": "Tuần",
-  },
-  {
-    "value": TimeType.month,
-    "name": "Tháng",
-  },
-  {
-    "value": TimeType.year,
-    "name": "Năm",
-  },
-];
-
 class _CustomTimePickerState extends State<CustomTimePicker> {
   late TimeType _currentTimeType;
   late TimeRange _currentTime;
+
+  List<Map<String, dynamic>> _timeTypeList(bool allowDay) {
+    final day = allowDay ? <Map<String, dynamic>>[{ "value": TimeType.day, "name": "Ngày"}] : <Map<String, dynamic>>[];
+    return day +
+    [
+      {
+        "value": TimeType.week,
+        "name": "Tuần",
+      },
+      {
+        "value": TimeType.month,
+        "name": "Tháng",
+      },
+      {
+        "value": TimeType.year,
+        "name": "Năm",
+      },
+    ];
+  }
 
   String _getTimeString(){
     switch(_currentTimeType) {
@@ -106,6 +108,7 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
 
   @override
   Widget build(BuildContext context) {
+    final timeTypeList = _timeTypeList(widget.allowDay);
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 15),
       elevation: 6,

@@ -57,7 +57,7 @@ class _NewCreditFormState extends State<NewCreditForm> {
           ),
           PaymentType.installment => Installment(
             period: _formData["period"],
-            phase: _formData["phase"],
+            // phase: _formData["phase"],
             originInterest: _formData["interest"],
             phaselyDuedate: _formData["duedate"],
           ),
@@ -96,7 +96,7 @@ class _NewCreditFormState extends State<NewCreditForm> {
           children: [
             inputLabelWithPadding("Tiêu đề"),
             TextFormField(
-              decoration: addRecordFormFieldStyle(icon: const Icon(Icons.title)),
+              decoration: formFieldDecor(icon: const Icon(Icons.title)),
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) {
                 if(value == null || value.isEmpty) {
@@ -110,7 +110,7 @@ class _NewCreditFormState extends State<NewCreditForm> {
             TextFormField(
               initialValue: "0",
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.money_dollar)),
+              decoration: formFieldDecor(icon: const Icon(CupertinoIcons.money_dollar)),
               keyboardType: TextInputType.number,
               validator: (value) => numericValidator(value, "amount"),
             ),
@@ -118,7 +118,7 @@ class _NewCreditFormState extends State<NewCreditForm> {
             TextFormField(
               initialValue: "0",
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: addRecordFormFieldStyle(icon: const Icon(CupertinoIcons.money_dollar)),
+              decoration: formFieldDecor(icon: const Icon(CupertinoIcons.money_dollar)),
               keyboardType: TextInputType.number,
               validator: (value) => numericValidator(value, "limit"),
             ),

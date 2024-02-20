@@ -7,6 +7,8 @@ import 'package:saving_app/data/repositories/accounts/debt/debt_repo.dart';
 import 'package:saving_app/data/repositories/accounts/debt/debt_repo_impl.dart';
 import 'package:saving_app/domain/providers/transaction_provider.dart';
 import 'package:saving_app/utils/times.dart';
+import 'package:saving_app/viewmodels/plan/plan_setting_viewmodel.dart';
+import 'package:saving_app/viewmodels/transact/plan_transact_viewmodel.dart';
 
 class DebtViewModel extends ChangeNotifier {
   final DebtRepository _repo;
@@ -50,8 +52,10 @@ final totalDebtProvider = FutureProvider((ref) async {
   return res;
 });
 
-final totalDebtToPay = Provider.family((ref, TimeRange range) {
-  return 10000000;
+final totalDebtToPay = FutureProvider.family((ref, TimeRange range) async {
+  final debts = await ref.watch(debtViewModelProvider).getDebts();
+  final total = debts.fold(0, (prev, debt) => prev + debt.payment.minimumPayment);
+  return total;
 });
 
 final totalDebtPaidProvider = Provider.family((ref, TimeRange range) {
@@ -59,6 +63,22 @@ final totalDebtPaidProvider = Provider.family((ref, TimeRange range) {
   return datas
   .where((transact) => range.contain(transact.timestamp) && ["c9.3", "c12.1"].contains(transact.categoryId))
   .fold(0, (prev, transact) => prev + transact.amount);
+});
+
+final snowballAmount = FutureProvider((ref) async {
+  final incomeDist = ref.watch(currentIncomeDistProvider).when(
+                  data: (data) => data, 
+                  error: (error, _) => null, 
+                  loading: () => null
+  );
+  final totalIncome = ref.watch(totalIncomeProvider).when(
+    data: (data) => data, 
+    error: (error, _) => 0, 
+    loading: () => -1,
+  );
+  if(incomeDist != null && totalIncome != null) {
+    
+  }
 });
 
 final debtsProvider = FutureProvider((ref) async {

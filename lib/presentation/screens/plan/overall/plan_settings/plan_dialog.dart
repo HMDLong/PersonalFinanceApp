@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:saving_app/data/models/plan/income_dist.dart';
-import 'package:saving_app/viewmodels/plan_setting_viewmodel.dart';
+import 'package:saving_app/viewmodels/plan/plan_setting_viewmodel.dart';
 
 class PlanDialog extends ConsumerStatefulWidget {
   const PlanDialog({super.key});
@@ -19,6 +19,7 @@ class _PlanDialogState extends ConsumerState<PlanDialog> {
     return AlertDialog(
       title: const Text("Hãy chọn 1 phương án"),
       content: ListView(
+        shrinkWrap: true,
         children: List.generate(
           allPlans.length, 
           (index) {
@@ -35,23 +36,26 @@ class _PlanDialogState extends ConsumerState<PlanDialog> {
                     color: chosenPlan == index ? Colors.blue.shade200 : Colors.white,
                   ),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Text(
-                        allPlans[index].title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(
+                          allPlans[index].title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold
+                          ),
                         ),
                       ),
-                    ),
-                    Text(
-                      allPlans[index].shortExplaination,
-                      softWrap: true,
-                    ),
-                  ],
+                      Text(
+                        allPlans[index].shortExplaination,
+                        softWrap: true,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
