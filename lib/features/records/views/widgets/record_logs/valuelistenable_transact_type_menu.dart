@@ -1,17 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:saving_app/data/models/category.model.dart';
 import 'package:saving_app/data/models/transaction.model.dart';
+import 'package:saving_app/features/records/viewmodels/records.viewmodel.dart';
 
-class ValueListenableTransactTypeMenu extends StatefulWidget {
+class TransactTypeMenu extends ConsumerStatefulWidget {
   final List<Map<String, dynamic>> menuItems;
   final void Function(TransactionType newType) onTypeChanged;
   final List<Transaction> Function(Box<Transaction>, {TransactionType? type}) getTransaction;
   final ValueListenable listenable;
 
-  const ValueListenableTransactTypeMenu({
+  const TransactTypeMenu({
     super.key,
     required this.menuItems,
     required this.listenable,
@@ -20,14 +22,13 @@ class ValueListenableTransactTypeMenu extends StatefulWidget {
   });
 
   @override
-  State<ValueListenableTransactTypeMenu> createState() => _ValueListenableTransactTypeMenuState();
+  ConsumerState<TransactTypeMenu> createState() => _TransactTypeMenuState();
 }
 
-class _ValueListenableTransactTypeMenuState extends State<ValueListenableTransactTypeMenu> {
-  TransactionType _currentTransactionTab = TransactionType.expense;
-
+class _TransactTypeMenuState extends ConsumerState<TransactTypeMenu> {
   @override
   Widget build(BuildContext context) {
+    final currentTransactionTab = ref.watch(recordLogViewModelProvider).currentTransactType;
     return Container(
       decoration: BoxDecoration(
         border: Border.all(width: 0.2),
@@ -41,14 +42,14 @@ class _ValueListenableTransactTypeMenuState extends State<ValueListenableTransac
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
-                    color: _currentTransactionTab == e["value"] ? Colors.blueAccent.shade700 : Colors.white,
+                    color: currentTransactionTab == e["value"] ? Colors.blueAccent.shade700 : Colors.white,
                   ),
                   child: Column(
                     children: [
                       Text(
                         e["name"],
                         style: TextStyle(
-                          color: _currentTransactionTab == e["value"] ? Colors.white : Colors.black,
+                          color: currentTransactionTab == e["value"] ? Colors.white : Colors.black,
                         ),
                       ),
                       ValueListenableBuilder(
@@ -65,7 +66,7 @@ class _ValueListenableTransactTypeMenuState extends State<ValueListenableTransac
                           return Text(
                             "${NumberFormat.decimalPattern().format(sum)} VND",
                             style: TextStyle(
-                              color: _currentTransactionTab == e["value"] ? Colors.white : Colors.black,
+                              color: currentTransactionTab == e["value"] ? Colors.white : Colors.black,
                               fontSize: 12
                             ),
                           );
@@ -76,9 +77,9 @@ class _ValueListenableTransactTypeMenuState extends State<ValueListenableTransac
                 ),
                 onTap: () {
                   setState(() {
-                    _currentTransactionTab = e["value"];
                     widget.onTypeChanged(e["value"]);
                   });
+                  ref.read(recordLogViewModelProvider).transactType = e["value"];
                 },
               )
             );

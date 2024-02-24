@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:saving_app/data/models/accounts.model.dart';
 import 'package:saving_app/data/models/transaction.model.dart';
-import 'package:saving_app/presentation/screens/records/widgets/record_logs/transaction_card.dart';
+import 'package:saving_app/features/records/views/widgets/record_logs/transaction_card.dart';
 
 class TransactionList extends StatelessWidget {
   final Box<Transaction> transactionBox;

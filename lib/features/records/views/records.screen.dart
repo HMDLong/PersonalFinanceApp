@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
-import 'package:saving_app/presentation/screens/records/add_record.screen.dart';
-import 'package:saving_app/presentation/screens/shared_widgets/title.dart';
-// import 'package:saving_app/screens/styles.dart';
-// import 'package:intl/intl.dart';
-
-import './widgets/budgets_carousel/budgets_carousel.dart';
-import './widgets/notification/notification.dart';
-import './widgets/record_logs/record_logs.dart';
+import 'package:saving_app/features/records/views/add_record.screen.dart';
+import 'package:saving_app/presentation/screens/style/styles.dart';
+import 'widgets/record_logs/record_logs.dart';
 
 class RecordScreen extends StatefulWidget {
   const RecordScreen({super.key});
@@ -21,16 +16,9 @@ class _RecordScreenState extends State<RecordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Nhật ký thu chi", 
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
+      appBar: defaultStyledAppBar(
+        title: "Nhật ký thu chi",
+        onBackPressed: () => Navigator.of(context).pop(),
       ),
       body: const SafeArea(
         child: Padding(
@@ -40,7 +28,7 @@ class _RecordScreenState extends State<RecordScreen> {
           ),
         )
       ),
-      floatingActionButton: FloatingActionButton.small(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           pushNewScreen(context, screen: const AddRecordScreen());
         },

@@ -6,7 +6,6 @@ import 'package:saving_app/data/models/transaction.model.dart';
 import 'package:saving_app/data/repositories/transact/transact_repo.dart';
 import 'package:saving_app/data/repositories/transact/transact_repo_impl.dart';
 import 'package:saving_app/utils/times.dart';
-import 'package:saving_app/viewmodels/account/account_viewmodel.dart';
 import 'package:saving_app/viewmodels/transact/plan_transact_viewmodel.dart';
 
 class TransactionViewModel extends ChangeNotifier {
@@ -20,7 +19,7 @@ class TransactionViewModel extends ChangeNotifier {
       ref.read(planTransactionProvider.notifier).confirmTransact(newTransaction.id, newTransaction.planTransactId!);
     }
     if(newTransaction.paid) {
-      ref.watch(updateAccountOnNewTransaction(newTransaction));
+      // ref.watch(updateAccountOnNewTransaction(newTransaction));
     }
     _repo.putTransaction(newTransaction);
     notifyListeners();

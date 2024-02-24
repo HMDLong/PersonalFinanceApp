@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:saving_app/constants/built_in_categories.dart';
 import 'package:saving_app/data/models/accounts.model.dart';
 import 'package:saving_app/data/models/category.model.dart';
 import 'package:saving_app/data/models/transaction.model.dart';
 import 'package:saving_app/data/local/model_repos/account/account_repo.dart';
-import '../../../../../constants/built_in_categories.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../edit_record.screen.dart';
 

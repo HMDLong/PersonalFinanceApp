@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:saving_app/features/records/views/widgets/record_logs/transact_type_menu.dart';
 import 'package:saving_app/presentation/screens/accounts/widgets/form/loan_form.dart';
-import '../records/widgets/record_logs/transact_type_menu.dart';
 import 'widgets/form/credit_form.dart';
 import 'widgets/form/debit_form.dart';
 import 'widgets/form/saving_form.dart';

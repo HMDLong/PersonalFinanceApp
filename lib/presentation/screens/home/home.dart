@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:saving_app/data/models/transaction.model.dart';
-import 'package:saving_app/presentation/screens/records/records.screen.dart';
-import 'package:saving_app/presentation/screens/records/widgets/record_logs/transaction_card.dart';
+import 'package:saving_app/features/records/views/records.screen.dart';
+import 'package:saving_app/features/records/views/widgets/record_logs/transaction_card.dart';
 import 'package:saving_app/utils/format.dart';
 import 'package:saving_app/viewmodels/transact/transact_viewmodel.dart';
 

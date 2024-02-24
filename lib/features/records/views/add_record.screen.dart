@@ -6,7 +6,7 @@ import 'package:saving_app/data/models/category.model.dart';
 import 'package:saving_app/data/models/plan_transaction.model.dart';
 import 'package:saving_app/data/models/transaction.model.dart';
 import 'package:saving_app/data/local/model_repos/account/account_repo.dart';
-import 'package:saving_app/presentation/screens/records/widgets/record_logs/event_picker.dart';
+import 'package:saving_app/features/records/views/widgets/record_logs/event_picker.dart';
 import 'package:saving_app/presentation/screens/shared_widgets/account_picker.dart';
 import 'package:saving_app/presentation/screens/shared_widgets/category_picker.dart';
 import 'package:saving_app/presentation/screens/shared_widgets/timestamp_picker.dart';
@@ -55,6 +55,7 @@ class _AddRecordScreenState extends ConsumerState<AddRecordScreen>{
   void _onSubmit() {
     _formKey.currentState!.save();
     if(_formKey.currentState!.validate()){
+      print("$transactionType/${fromAccount?.id}");
       Transaction newTransaction = Transaction(
         id: getRandomKey(), 
         timestamp: timestamp!, 
@@ -72,12 +73,12 @@ class _AddRecordScreenState extends ConsumerState<AddRecordScreen>{
       );
       // context.read<TransactionProvider>().putTransaction(newTransaction);
       ref.watch(transactionsViewModelProvider).putTransaction(newTransaction);
-      if(newTransaction.transactAccountId != null) {
-        AccountManager.of(context).updateAccountBalance(newTransaction.transactAccountId!, newTransaction.amount);
-      }
-      if(newTransaction.targetAccountId != null) {
-        AccountManager.of(context).updateAccountBalance(newTransaction.targetAccountId!, newTransaction.amount);
-      }
+      // if(newTransaction.transactAccountId != null) {
+      //   AccountManager.of(context).updateAccountBalance(newTransaction.transactAccountId!, newTransaction.amount);
+      // }
+      // if(newTransaction.targetAccountId != null) {
+      //   AccountManager.of(context).updateAccountBalance(newTransaction.targetAccountId!, newTransaction.amount);
+      // }
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Thêm thành công")));
       Navigator.of(context).pop();
     }
@@ -141,7 +142,7 @@ class _AddRecordScreenState extends ConsumerState<AddRecordScreen>{
                         if (parsedAmount <= 0) {
                           return "Số tiền cần lớn hơn 0";
                         }
-                        _formData["amount"] = parsedAmount;
+                        amount = parsedAmount;
                         return null;
                       },
                     ),

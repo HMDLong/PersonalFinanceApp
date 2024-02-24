@@ -8,9 +8,9 @@ import 'package:saving_app/constants/constants.dart';
 import 'package:saving_app/data/local/model_repos/account/account_repo.dart';
 import 'package:saving_app/data/models/accounts.model.dart';
 import 'package:saving_app/data/models/transaction.model.dart';
+import 'package:saving_app/features/records/views/widgets/record_logs/transaction_card.dart';
 import 'package:saving_app/presentation/screens/accounts/widgets/details/debit/edit_account.dart';
 import 'package:saving_app/presentation/screens/accounts/widgets/details/total_balance_chart.dart';
-import 'package:saving_app/presentation/screens/records/widgets/record_logs/transaction_card.dart';
 
 class CreditDetail extends StatefulWidget {
   final Credit credit;

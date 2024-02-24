@@ -5,10 +5,11 @@ import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:saving_app/constants/constants.dart';
 import 'package:saving_app/data/models/category.model.dart';
 import 'package:saving_app/data/models/transaction.model.dart';
-import 'package:saving_app/presentation/screens/records/add_record.screen.dart';
+import 'package:saving_app/features/records/views/add_record.screen.dart';
+import 'package:saving_app/features/records/views/widgets/record_logs/record_filter.dart';
+import 'package:saving_app/features/records/views/widgets/record_logs/valuelistenable_transact_type_menu.dart';
 import 'package:saving_app/presentation/screens/shared_widgets/timepicker_custom_dialog.dart';
-import 'package:saving_app/presentation/screens/records/widgets/record_logs/valuelistenable_transact_type_menu.dart';
-import '../../../../../utils/times.dart';
+import 'package:saving_app/utils/times.dart';
 import 'transaction_card.dart';
 
 class RecordLogs extends StatefulWidget {
@@ -22,7 +23,6 @@ class _RecordLogsState extends State<RecordLogs>{
   TimeRange _currentTime = getRangeOfDay();
 
   TransactionType _currentTransactionTab = TransactionType.expense;
-  int _currentTransactionFilter = 0;
   late Box<Transaction> _transactionsBox;
 
   @override
@@ -41,15 +41,9 @@ class _RecordLogsState extends State<RecordLogs>{
       _currentTime.contain(transaction.timestamp) && transaction.paid
       // true
     ).where((transaction) {
-      // filter by transaction type: expense/income
-        var transactType = type ?? _currentTransactionTab;
-        return transaction.transactType == transactType;
-        // return switch(transactType) {
-        //   TransactionType.expense => transaction.amount < 0,
-        //   TransactionType.income => transaction.amount > 0,
-        //   _ => true,
-        // };
-      }
+      var transactType = type ?? _currentTransactionTab;
+      return transaction.transactType == transactType;
+    }
     ).toList();
     filteredTransactions.sort(((a, b) =>
       a.timestamp.isAfter(b.timestamp) ?
@@ -70,6 +64,15 @@ class _RecordLogsState extends State<RecordLogs>{
     },
   ];
 
+  _filter() {
+    showDialog(
+      context: context, 
+      builder: (context) {
+        return const RecordFilterDialog();
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -81,7 +84,7 @@ class _RecordLogsState extends State<RecordLogs>{
             });
           }
         ),
-        ValueListenableTransactTypeMenu(
+        TransactTypeMenu(
           menuItems: _transactTypeMenuItems(), 
           listenable: _transactionsBox.listenable(), 
           onTypeChanged: (newType) {
@@ -91,54 +94,32 @@ class _RecordLogsState extends State<RecordLogs>{
           }, 
           getTransaction: getFiltered
         ),
-        Row(
-          children: [
-            const SizedBox(width: 5.0,),
-            GestureDetector(
-              child: Text(
-                "Theo loại",
-                style: TextStyle(
-                  color: _currentTransactionFilter == 1 ? CupertinoColors.activeBlue : Colors.black
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+          child: Row(
+            children: [
+              const Expanded(
+                flex: 6,
+                child: Text(
+                  "Hiển thị ${10} giao dịch",
                 ),
               ),
-              onTap: () => setState(() {
-                _currentTransactionFilter = 1;
-              }),
-            ),
-            const SizedBox(width: 20.0,),
-            GestureDetector(
-              child: Text(
-                "Tất cả",
-                style: TextStyle(
-                  color: _currentTransactionFilter == 0 ? CupertinoColors.activeBlue : Colors.black
+              Expanded(
+                child: IconButton(
+                  onPressed: () {
+                    // TODO: Filter transact by searching by description
+                  }, 
+                  icon: const Icon(CupertinoIcons.search),
                 ),
               ),
-              onTap: () => setState(() {
-                _currentTransactionFilter = 0;
-              }),
-            ),
-            const SizedBox(width: 110.0,),
-            Expanded(
-              child: IconButton(
-                onPressed: () {
-                  pushNewScreen(
-                    context, 
-                    screen: const AddRecordScreen(),
-                    withNavBar: true,
-                  );
-                }, 
-                icon: const Icon(CupertinoIcons.calendar_badge_plus),
+              Expanded(
+                child: IconButton(
+                  onPressed: _filter, 
+                  icon: const Icon(CupertinoIcons.line_horizontal_3_decrease),
+                ),
               ),
-            ),
-            Expanded(
-              child: IconButton(
-                onPressed: () {
-                  
-                }, 
-                icon: const Icon(CupertinoIcons.line_horizontal_3_decrease),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
         ValueListenableBuilder(
           valueListenable: _transactionsBox.listenable(), 

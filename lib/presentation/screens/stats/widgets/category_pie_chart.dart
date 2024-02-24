@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:saving_app/data/models/category.model.dart';
 import 'package:saving_app/data/models/transaction.model.dart';
 import 'package:saving_app/presentation/managers/plan_manager.dart';
-import 'package:saving_app/presentation/screens/records/widgets/record_logs/transact_type_menu.dart';
 import 'package:saving_app/utils/times.dart';
 import 'package:saving_app/viewmodels/transact/transact_viewmodel.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
