@@ -43,6 +43,9 @@ class Debt extends Account {
       timestamp: payment.payDate,
     );
   }
+  
+  @override
+  AccountType get accountType => AccountType.debt;
 }
 
 enum PaymentType {

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:saving_app/data/models/accounts.model.dart';
+import 'package:saving_app/features/accounts/models/account.dart';
 import 'package:saving_app/features/accounts/repositories/account_repo.dart';
+import 'package:saving_app/features/accounts/repositories/account_repo_impl.dart';
 
 class AccountViewModel extends ChangeNotifier {
   final AccountRepository repo;
@@ -11,17 +12,22 @@ class AccountViewModel extends ChangeNotifier {
     return repo.allAccounts;
   }
 
+  Future<List<Account>> getAccountByType(AccountType type) async {
+    return repo.getByType(type);
+  }
+
   Future<Account?> getAccountById(String id) async {
     return repo.getById(id);
   }
 
   Future<void> addAccount(Account newAccount) async {
-    repo.add(newAccount);
+    await repo.add(newAccount);
+    print("acc added");
     notifyListeners();
   }
 
   Future<void> deleteAccount(String accountId) async {
-    repo.delete(accountId);
+    await repo.delete(accountId);
     notifyListeners();
   }
 
@@ -30,10 +36,10 @@ class AccountViewModel extends ChangeNotifier {
       throw Exception("Not enough balance in ${from.title}");
     }
     from.amount = from.amount! - amount;
-    repo.update(from);
+    await repo.update(from);
     if(to != null) {
       to.amount = to.amount! + amount;
-      repo.update(to);
+      await repo.update(to);
     }
     notifyListeners();
   }
@@ -41,8 +47,13 @@ class AccountViewModel extends ChangeNotifier {
   void rollback(Account from, Account? to, int amount) {
     notifyListeners();
   }
+
+  Future<void> updateAccount(Account account) async {
+    await repo.update(account);
+    notifyListeners();
+  }
 }
 
-final accountsProvider = Provider((ref) {
+final accountsProvider = ChangeNotifierProvider((ref) {
   return AccountViewModel(repo: ref.watch(accountRepoProvider));
 });

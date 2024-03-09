@@ -1,7 +1,11 @@
 import 'package:intl/intl.dart';
 
+String toVnMonthDate(DateTime time) {
+  return "${time.day} Th${time.month}";
+}
+
 String toFullVnDateTime(DateTime time) {
-  return "${time.day} Th${time.month}, ${time.year}";
+  return "${time.day} Th${time.month} ${time.year}";
 }
 
 String toFullVnTimeStamp(DateTime time) {

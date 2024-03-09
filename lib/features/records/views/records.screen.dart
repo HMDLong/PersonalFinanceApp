@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import 'package:saving_app/constants/constants.dart';
 import 'package:saving_app/features/records/views/add_record.screen.dart';
 import 'package:saving_app/presentation/screens/style/styles.dart';
 import 'widgets/record_logs/record_logs.dart';
@@ -17,7 +18,7 @@ class _RecordScreenState extends State<RecordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: defaultStyledAppBar(
-        title: "Nhật ký thu chi",
+        title: PageTitleString.recordPage,
         onBackPressed: () => Navigator.of(context).pop(),
       ),
       body: const SafeArea(

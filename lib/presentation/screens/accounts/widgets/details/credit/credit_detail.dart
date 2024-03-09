@@ -117,12 +117,12 @@ class _CreditDetailState extends State<CreditDetail> {
               ],
             ),
           ),
-          AccountBalanceChart(
-            boxListenable: transactionBox.listenable(), 
-            account: widget.credit,
-            height: 180,
-            width: double.infinity
-          ),
+          // AccountBalanceChart(
+          //   boxListenable: transactionBox.listenable(), 
+          //   account: widget.credit,
+          //   height: 180,
+          //   width: double.infinity
+          // ),
           const SizedBox(height: 10,),
           const Padding(
             padding: EdgeInsets.all(8.0),
@@ -157,6 +157,6 @@ class _CreditDetailState extends State<CreditDetail> {
   }
 
   void _editCredit() {
-    pushNewScreen(context, screen: EditAccountScreen(account: widget.credit));
+    // pushNewScreen(context, screen: EditAccountScreen(account: widget.credit));
   }
 }

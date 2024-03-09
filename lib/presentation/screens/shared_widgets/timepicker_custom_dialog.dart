@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
+// import 'package:saving_app/constants/constants.dart';
 import 'package:saving_app/utils/times.dart';
 
 class CustomTimePicker extends StatefulWidget {
@@ -19,179 +20,110 @@ class CustomTimePicker extends StatefulWidget {
   State<CustomTimePicker> createState() => _CustomTimePickerState();
 }
 
-enum TimeType {
-  day,
-  week,
-  month,
-  year,
-}
-
 class _CustomTimePickerState extends State<CustomTimePicker> {
-  late TimeType _currentTimeType;
   late TimeRange _currentTime;
 
-  List<Map<String, dynamic>> _timeTypeList(bool allowDay) {
-    final day = allowDay ? <Map<String, dynamic>>[{ "value": TimeType.day, "name": "Ngày"}] : <Map<String, dynamic>>[];
+  List<DropdownMenuEntry<TimeType>> _timeTypeList(bool allowDay) {
+    final List<DropdownMenuEntry<TimeType>> day = 
+      allowDay ? [const DropdownMenuEntry(value:TimeType.day, label: "Ngày")] 
+               : [];
     return day +
     [
-      {
-        "value": TimeType.week,
-        "name": "Tuần",
-      },
-      {
-        "value": TimeType.month,
-        "name": "Tháng",
-      },
-      {
-        "value": TimeType.year,
-        "name": "Năm",
-      },
+      const DropdownMenuEntry(value:TimeType.week, label: "Tuần"),
+      const DropdownMenuEntry(value:TimeType.month, label: "Tháng"),
+      const DropdownMenuEntry(value:TimeType.year, label: "Năm"),
+      const DropdownMenuEntry(value:TimeType.custom, label: "Tùy chọn"),
     ];
   }
 
-  String _getTimeString(){
-    switch(_currentTimeType) {
-      case TimeType.day: {
-        return DateFormat.yMd().format(_currentTime.start);
-      }
-      case TimeType.week: {
-        final formatter = DateFormat(DateFormat.ABBR_MONTH_DAY);
-        return "${formatter.format(_currentTime.start)} ~ ${formatter.format(_currentTime.end)}";
-      }
-      case TimeType.month: {
-        return DateFormat.yM().format(_currentTime.start);
-      }
-      case TimeType.year: {
-        return "${_currentTime.start.year}";
-      }
-    }
-  }
-
-  void _setNewType() {
-    _currentTime = switch(_currentTimeType) {
-      TimeType.day => getRangeOfDay(),
-      TimeType.week => getRangeOfTheWeek(),
-      TimeType.month => getRangeOfTheMonth(),
-      TimeType.year => getRangeOfTheYear(),
-    };
+  void _setNewType(TimeType type) {
+    _currentTime = TimeRange.rangeByType(type);
     widget.onTimeChanged(_currentTime);
-  }
-  
-  void _toPrevious() {
-    _currentTime = switch(_currentTimeType) {
-      TimeType.day => getPreviousDayRange(range: _currentTime),
-      TimeType.week => getPreviousWeekRangeByRange(range: _currentTime),
-      TimeType.month => getPreviousMonthRangeByRange(range: _currentTime),
-      TimeType.year => getPreviousYearRange(range: _currentTime),
-    };
-    widget.onTimeChanged(_currentTime);
-  }
-
-  void _toNext() {
-    setState(() {
-      _currentTime = switch(_currentTimeType) {
-        TimeType.day => getNextDayRange(range: _currentTime),
-        TimeType.week => getNextWeekRangeByRange(range: _currentTime),
-        TimeType.month => getNextMonthRangeByRange(range: _currentTime),
-        TimeType.year => getNextYearRange(range: _currentTime),
-      };
-      widget.onTimeChanged(_currentTime);
-    });
   }
 
   @override
   void initState() {
-    _currentTimeType = widget.initialTimeType;
-    _currentTime = getRangeOfDay();
+    _currentTime = TimeRange.rangeByType(widget.initialTimeType);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final timeTypeList = _timeTypeList(widget.allowDay);
     return Card(
-      margin: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 15),
+      margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 15),
       elevation: 6,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0)
+        borderRadius: BorderRadius.circular(22.0)
       ),
-      child: Column(
+      color: Theme.of(context).primaryColor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Time type menu
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              timeTypeList.length,
-              (index) {
-                final thisType = timeTypeList[index];
-                return GestureDetector(
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: 50,
-                    height: 25,
-                    margin: const EdgeInsets.all(5.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
-                      color: thisType["value"] == _currentTimeType
-                              ? Colors.lightBlue.shade600 
-                              : Colors.white,
-                    ),
-                    child: Text(
-                      thisType["name"],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: thisType["value"] == _currentTimeType
-                                ? Colors.white 
-                                : Colors.black87,
-                      ),
-                    ),
-                  ),
-                  onTap: () {
-                    setState(() {
-                      _currentTimeType = thisType["value"];
-                      _setNewType();
-                    });
-                  },
-                );
-              }
+          Expanded(
+            flex: 1,
+            child: IconButton(
+              icon: const Icon(CupertinoIcons.chevron_left, color: Colors.white,),
+              onPressed: () => setState(() {
+                _currentTime = _currentTime.previous();
+                widget.onTimeChanged(_currentTime);
+              }),
             ),
           ),
-          // DatePicker
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                flex: 1,
-                child: IconButton(
-                  icon: const Icon(CupertinoIcons.chevron_left),
-                  onPressed: () => setState(() {
-                    _toPrevious();
-                  }),
+          Expanded(
+            flex: 5,
+            child: GestureDetector(
+              onTap: _selectTimeType,
+              child: Text(
+                _currentTime.toString(),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white,
                 ),
               ),
-              Expanded(
-                flex: 5,
-                child: Text(
-                  _getTimeString(),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: IconButton(
-                  icon: const Icon(CupertinoIcons.chevron_right),
-                  onPressed: () => setState(() {
-                    _toNext();
-                  }),
-                ),
-              ),
-            ],
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: IconButton(
+              icon: const Icon(CupertinoIcons.chevron_right, color: Colors.white,),
+              onPressed: () => setState(() {
+                _currentTime = _currentTime.next();
+                widget.onTimeChanged(_currentTime);
+              }),
+            ),
           ),
         ],
       ),
     );
+  }
+
+  void _selectTimeType() async {
+    TimeType? selectedType = await showDialog(
+      context: context, 
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Chọn khung thời gian"),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              children: _timeTypeList(widget.allowDay)
+                        .map((entry) {
+                          return GestureDetector(
+                            onTap: () => Navigator.of(context).pop(entry.value),
+                            child: ListTile(title: Text(entry.label))
+                          );
+                        }).toList()
+            ),
+          ),
+        );
+      }
+    );
+    if(selectedType != null) {
+      setState(() {
+        _setNewType(selectedType);
+      });
+    }
   }
 }

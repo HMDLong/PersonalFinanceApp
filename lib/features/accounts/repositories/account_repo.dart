@@ -1,46 +1,20 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:saving_app/data/models/accounts.model.dart';
+import 'package:saving_app/features/accounts/models/account.dart';
 
-class AccountRepository {
-  int get cash {
-    return 0;
+abstract class AccountRepository {
+  Future<List<Account>> get allAccounts;
+  Future<void> add(Account newAccount);
+  Future<void> update(Account newAccount);
+  Future<void> delete(String id);
+
+  Future<List<Account>> getByType(AccountType type) async {
+    return (await allAccounts).where((acc) => acc.accountType == type).toList();
   }
 
-  List<Debit> get debits {
-    return [];
-  }
-
-  List<Credit> get credits {
-    return [];
-  }
-
-  List<Debt> get debts {
-    return [];
-  }
-
-  List<Account> get allAccounts {
-    return [];
-  }
-
-  Account? getById(String id) {
-    final res = allAccounts.where((acc) => acc.id == id);
+  Future<Account?> getById(String id) async {
+    final res = (await allAccounts).where((acc) => acc.id == id);
     if(res.isEmpty) {
       return null;
     }
     return res.first;
   }
-
-  void add(Account newAccount) {
-
-  }
-
-  void update(Account newAccount) {
-
-  }
-
-  void delete(String id) {
-
-  }
 }
-
-final accountRepoProvider = Provider((ref) => AccountRepository());

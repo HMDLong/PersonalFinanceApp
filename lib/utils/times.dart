@@ -1,25 +1,50 @@
 import 'dart:math';
+import 'package:saving_app/utils/format.dart';
 
-import 'package:intl/intl.dart';
+enum TimeType {
+  day,
+  week,
+  month,
+  year,
+  custom,
+}
 
 class TimeRange {
+  TimeType timeType;
   late DateTime start;
   late DateTime end;
-
-  int get duration => end.difference(start).inDays;
 
   TimeRange({
     required DateTime start,
     required DateTime end,
+    this.timeType = TimeType.day,
   }) {
     this.start = start.toDateOnly();
     this.end = end.toDateOnly();
   }
 
+  factory TimeRange.rangeByType(TimeType type, {DateTime? start, DateTime? end}) =>
+    switch(type) {
+      TimeType.day => getRangeOfDay(),
+      TimeType.week => getRangeOfTheWeek(),
+      TimeType.month => getRangeOfTheMonth(),
+      TimeType.year => getRangeOfTheYear(),
+      TimeType.custom => start != null && end != null 
+                        ? TimeRange(start: start, end: end, timeType: TimeType.custom)
+                        : throw Exception("custom type must have non-nullable [start], [end]")
+    };
+
+  int get duration => end.difference(start).inDays;
+
   @override
   String toString() {
-    final formatter = DateFormat(DateFormat.YEAR_ABBR_MONTH_DAY);
-    return "${formatter.format(start)} ~ ${formatter.format(end)}";
+    switch(timeType) {
+      case TimeType.day: return "${start.day} Th${start.month} ${start.year}";
+      case TimeType.week: return "${toFullVnDateTime(start)}  ~  ${toFullVnDateTime(end)}";
+      case TimeType.month: return toVnMonthYear(start);
+      case TimeType.year: return "${start.year}";
+      case TimeType.custom: return "${toFullVnDateTime(start)}  ~  ${toFullVnDateTime(end)}";
+    }
   }
 
   /// Check if a [date] is between this range
@@ -30,12 +55,36 @@ class TimeRange {
     return true;
   }
 
+  /// Return TimeRange represent the next range relative to [this]
+  TimeRange next() {
+    return switch(timeType) {
+      TimeType.day => getNextDayRange(range: this),
+      TimeType.week => getNextWeekRangeByRange(range: this),
+      TimeType.month => getNextMonthRangeByRange(range: this),
+      TimeType.year => getNextYearRange(range: this),
+      TimeType.custom => this,
+    };
+  }
+
+  /// Return TimeRange represent the previous range relative to [this]
+  TimeRange previous() {
+    return switch(timeType) {
+      TimeType.day => getPreviousDayRange(range: this),
+      TimeType.week => getPreviousWeekRangeByRange(range: this),
+      TimeType.month => getPreviousMonthRangeByRange(range: this),
+      TimeType.year => getPreviousYearRange(range: this),
+      TimeType.custom => this,
+    };
+  }
+
   /// Return a list contains all the dates that in this range
   List<DateTime> getRangeDates(){
     final rangeDuration = duration;
     return List<DateTime>.generate(rangeDuration + 1, (index) => start.add(Duration(days: index)));
   }
 
+  /// Return a list of all the [weekday] in this range. 
+  /// Ex: [weekday] = 6 => all Friday in this range
   List<DateTime> weekdaysOfRange(int weekday) {
     final res = <DateTime>[];
     final dist = weekday - start.weekday;
@@ -73,6 +122,7 @@ extension TimeRangeExt on DateTime {
 TimeRange getNDaysBefore(DateTime date, int n) {
   final dateOnly = date.toDateOnly();
   return TimeRange(
+    timeType: TimeType.custom,
     start: dateOnly.subtract(Duration(days: n)), 
     end: dateOnly,
   );
@@ -96,6 +146,7 @@ List<DateTime> getDayOfEveryWeekInMonth(DateTime anchor, int dayInWeek) {
 TimeRange getRangeOfDay({DateTime? date}){
   final theDay = date ?? DateTime.now();
   return TimeRange(
+    timeType: TimeType.day,
     start: theDay.toDateOnly(), 
     end: theDay.toDateOnly(),
   );
@@ -103,6 +154,7 @@ TimeRange getRangeOfDay({DateTime? date}){
 
 TimeRange getNextDayRange({required TimeRange range}){
   return TimeRange(
+    timeType: TimeType.day,
     start: range.start.add(const Duration(days: 1)), 
     end: range.start.add(const Duration(days: 1)),
   );
@@ -110,6 +162,7 @@ TimeRange getNextDayRange({required TimeRange range}){
 
 TimeRange getPreviousDayRange({required TimeRange range}){
   return TimeRange(
+    timeType: TimeType.day,
     start: range.start.subtract(const Duration(days: 1)), 
     end: range.start.subtract(const Duration(days: 1)),
   );
@@ -120,7 +173,7 @@ TimeRange getRangeOfTheWeek({DateTime? targetDate}) {
   final anchor = targetDate ?? DateTime.now();
   final monday = DateTime.now().subtract(Duration(days: anchor.weekday - DateTime.monday));
   final sunday = monday.add(const Duration(days: 6));
-  return TimeRange(start: monday, end: sunday);
+  return TimeRange(timeType: TimeType.week, start: monday, end: sunday);
 }
 
 TimeRange getPreviousWeekRangeByDate({required DateTime date}) {
@@ -130,6 +183,7 @@ TimeRange getPreviousWeekRangeByDate({required DateTime date}) {
 
 TimeRange getPreviousWeekRangeByRange({required TimeRange range}) {
   return TimeRange(
+    timeType: TimeType.week,
     start: range.start.subtract(const Duration(days: 7)),
     end: range.end.subtract(const Duration(days: 7)),
   );
@@ -142,6 +196,7 @@ TimeRange getNextWeekRangeByDate({required DateTime date}) {
 
 TimeRange getNextWeekRangeByRange({required TimeRange range}) {
   return TimeRange(
+    timeType: TimeType.week,
     start: range.start.add(const Duration(days: 7)),
     end: range.end.add(const Duration(days: 7)),
   );
@@ -160,6 +215,7 @@ int getDaysInMonth(int year, int month) {
 TimeRange getRangeOfTheMonth({DateTime? date}) {
   final date_ = date ?? DateTime.now();
   return TimeRange(
+    timeType: TimeType.month,
     start: DateTime(date_.year, date_.month, 1), 
     end: DateTime(date_.year, date_.month, getDaysInMonth(date_.year, date_.month)),
   );
@@ -174,11 +230,13 @@ TimeRange getPreviousMonthRangeByRange({required TimeRange range}) {
   final start = range.start;
   if(start.month == 1) {
     return TimeRange(
+      timeType: TimeType.month,
       start: DateTime(start.year - 1, 12, 1),
       end: DateTime(start.year - 1, 12, 31),
     );
   }
   return TimeRange(
+    timeType: TimeType.month,
     start: DateTime(start.year, start.month - 1, 1),
     end: DateTime(start.year, start.month - 1, getDaysInMonth(start.year, start.month - 1)),
   );
@@ -193,11 +251,13 @@ TimeRange getNextMonthRangeByRange({required TimeRange range}) {
   final start = range.start;
   if(start.month == 12) {
     return TimeRange(
+      timeType: TimeType.month,
       start: DateTime(start.year + 1, 1, 1),
       end: DateTime(start.year + 1, 1, 31),
     );
   }
   return TimeRange(
+    timeType: TimeType.month,
     start: DateTime(start.year, start.month + 1, 1),
     end: DateTime(start.year, start.month + 1, getDaysInMonth(start.year, start.month + 1)),
   );
@@ -207,6 +267,7 @@ TimeRange getNextMonthRangeByRange({required TimeRange range}) {
 TimeRange getRangeOfTheYear({DateTime? date}) {
   final date_ = date ?? DateTime.now();
   return TimeRange(
+    timeType: TimeType.year,
     start: DateTime(date_.year, 1, 1), 
     end: DateTime(date_.year, 12, 31),
   );
@@ -215,6 +276,7 @@ TimeRange getRangeOfTheYear({DateTime? date}) {
 TimeRange getNextYearRange({required TimeRange range}) {
   final start = range.start;
   return TimeRange(
+    timeType: TimeType.year,
     start: DateTime(start.year + 1, 1, 1), 
     end: DateTime(start.year + 1, 12, 31),
   );
@@ -223,11 +285,8 @@ TimeRange getNextYearRange({required TimeRange range}) {
 TimeRange getPreviousYearRange({required TimeRange range}) {
   final start = range.start;
   return TimeRange(
+    timeType: TimeType.year,
     start: DateTime(start.year - 1, 1, 1), 
     end: DateTime(start.year - 1, 12, 31),
   );
-}
-
-void main() {
-  print(getDayOfEveryWeekInMonth(DateTime.now(), 2));
 }

@@ -120,9 +120,9 @@ class _DebitListTile extends StatelessWidget {
   }
   
   void _accountDetail(BuildContext context, Debit debit) {
-    pushNewScreen(
-      context, 
-      screen: DebitDetailScreen(account: debit)
-    );
+    // pushNewScreen(
+    //   context, 
+    //   screen: DebitDetailScreen(account: debit)
+    // );
   }
 }

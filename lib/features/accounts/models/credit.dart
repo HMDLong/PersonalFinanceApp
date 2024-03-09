@@ -1,6 +1,8 @@
-import 'package:saving_app/data/models/accounts.model.dart';
+
 import 'package:saving_app/data/models/category.model.dart';
 import 'package:saving_app/data/models/plan_transaction.model.dart';
+import 'package:saving_app/features/accounts/models/account.dart';
+import 'package:saving_app/features/accounts/models/debt.dart';
 import 'package:saving_app/utils/randoms.dart';
 
 class Credit extends Account {
@@ -43,4 +45,7 @@ class Credit extends Account {
       transactType: TransactionType.transact,
     );
   }
+  
+  @override
+  AccountType get accountType => AccountType.credit;
 }

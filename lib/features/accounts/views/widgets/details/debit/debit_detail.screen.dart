@@ -5,6 +5,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 import 'package:saving_app/constants/constants.dart';
+
 import 'package:saving_app/data/models/transaction.model.dart';
 import 'package:saving_app/data/local/model_repos/account/account_repo.dart';
 import 'package:saving_app/features/accounts/models/account.dart';
@@ -120,6 +121,6 @@ class _DebitDetailScreenState extends State<DebitDetailScreen> {
   }
 
   void _editDebit() {
-    // pushNewScreen(context, screen: EditAccountScreen(account: widget.account));
+    pushNewScreen(context, screen: EditAccountScreen(account: widget.account));
   }
 }
